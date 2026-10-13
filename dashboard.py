@@ -6,7 +6,7 @@ import plotly.express as px
 
 # Configuration de la page pour mobile
 st.set_page_config(page_title="IA Trading", layout="centered")
-st.title("📈 Mon Agent de Trading")
+st.title("📈 Mon Agent de Trading-QUO")
 
 DATA_DIR = "trading_agent_data"
 PORTFOLIO_FILE = os.path.join(DATA_DIR, "portfolio.json")
