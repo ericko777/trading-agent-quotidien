@@ -1,0 +1,36 @@
+name: Daily Trading Agent
+
+on:
+  schedule:
+    # S'exécute du Lundi au Vendredi (1-5)
+    # À 14h30 et 19h30 UTC (Ce qui correspond à 10h30 et 15h30 heure de l'Est / Québec)
+    - cron: '30 14,19 * * 1-5'
+  workflow_dispatch: 
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run trading agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python main.py
+
+      - name: Commit and push portfolio state
+        run: |
+          git config --global user.name 'Trading Bot'
+          git config --global user.email 'bot@local'
+          git add trading_agent_data/
+          git commit -m "Auto-update daily portfolio" || exit 0
+          git push
