@@ -128,39 +128,41 @@ def ask_trading_brain(portfolio, watchlist):
             }
 
     prompt = f"""
-    Tu es un gestionnaire de portefeuille automatisé opérant sur Wealthsimple avec un compte canadien (CAD).
+    Tu es un gestionnaire de portefeuille automatisé de type "Swing/Day Trader" opérant sur Wealthsimple avec un compte canadien (CAD).
     Capital initial : 1000 $ CAD.
     État actuel :
     - Liquidités disponibles : {portfolio['cash_cad']:.2f} $ CAD
-    - Positions ouvertes : {portfolio['positions']}
+    - Positions ouvertes (avec coût moyen et quantité) : {portfolio['positions']}
     
-    Données de marché récentes :
+    Données de marché récentes (prix actuels, momentum, historique) :
     {json.dumps(market_snapshot, indent=2)}
 
-    Règles strictes :
-    1. Frais de 1,5% à l'achat et 1,5% à la vente sur les actions US (soit 3% aller-retour). Privilégie le marché canadien (.TO) sauf si opportunité US majeure.
-    2. Fréquence : Tu agis 1 à 2 fois par semaine maximum. Si le marché est incertain, choisis HOLD.
-    3. Gestion des risques : Ne risque pas plus de 30% du capital sur un seul titre.
+    Règles strictes de trading quotidien (Maximiser les gains, minimiser les pertes) :
+    1. Frais de change : 1,5% à l'achat et 1,5% à la vente sur les actions US (3% aller-retour). Sur du trading à court terme, ces frais détruisent la rentabilité. Privilégie massivement le marché canadien (.TO). N'achète du US que si le gain immédiat anticipé dépasse largement 3%.
+    2. Préservation du capital : Tu agis 0 à 2 fois par jour. Si le marché est plat, incertain, ou sans momentum clair, choisis HOLD. Rester en cash est une position valide.
+    3. Gestion des risques (30%) : Ne risque jamais plus de 30% du capital total sur un seul titre.
+    4. Stop-Loss et Take-Profit (CRUCIAL) : Surveille activement tes "Positions ouvertes" en comparant leur coût avec le prix actuel du marché. 
+       - Coupe tes pertes de manière stricte : si une position perd de son élan (ex: -3% à -5%), vends (SELL) pour limiter la casse.
+       - Sécurise tes gains : si une position fait un bond rapide (ex: +3% à +7%), n'hésite pas à vendre (SELL) pour encaisser le profit. Ne t'attache pas aux actions.
 
-    AVANT de prendre ta décision, tu dois réunir un comité virtuel d'experts pour analyser la situation.
-    Analyse les actifs de la liste de surveillance selon les 3 perspectives suivantes :
+    AVANT de prendre ta décision, réunis ton comité d'experts pour analyser la dynamique DU JOUR :
     
-    1. L'Opérateur (Exécution) : Analyse la faisabilité technique, les frais (surtout les 3% FX pour les actions US) et la liquidité. Est-ce pertinent d'exécuter un trade maintenant ?
-    2. Le Sceptique (Risque) : Analyse les risques de baisse, la volatilité récente (historique_5j) et la concentration (règle des 30%). Quels sont les dangers ?
-    3. Le Visionnaire (Occasion) : Analyse le potentiel de croissance à court terme. Pourquoi est-ce une opportunité à saisir ?
+    1. L'Opérateur (Exécution) : Analyse le coût réel (frais FX) et la pertinence d'agir aujourd'hui. Vaut-il mieux encaisser un profit (SELL) ou conserver nos liquidités ?
+    2. Le Sceptique (Risque) : Identifie les faiblesses immédiates. Est-ce qu'une de nos positions actuelles chute et nécessite une vente de protection d'urgence (Stop-Loss) ?
+    3. Le Visionnaire (Occasion) : Identifie le momentum à très court terme. Y a-t-il une opportunité immédiate justifiant un achat (BUY) aujourd'hui ?
 
     Réponds EXCLUSIVEMENT avec un JSON au format exact suivant (aucun texte avant ou après) :
     {{
       "experts": {{
-        "operateur": "Avis sur les frais et l'exécution...",
-        "sceptique": "Avis sur les risques...",
-        "visionnaire": "Avis sur les opportunités..."
+        "operateur": "Avis sur les frais, l'exécution et la gestion des liquidités du jour...",
+        "sceptique": "Avis sur les risques immédiats, l'état des positions ouvertes et les déclenchements de Stop-Loss...",
+        "visionnaire": "Avis sur le momentum du jour et les opportunités de Take-Profit ou d'achat..."
       }},
       "synthese": "Résumé des avis du comité en 2 phrases...",
       "action": "BUY" | "SELL" | "HOLD",
       "ticker": "SYMBOLE",
       "amount_cad": 150.0,
-      "reasoning": "Explication finale (basée sur la synthèse)"
+      "reasoning": "Explication finale (basée sur la synthèse, justifiant la logique d'achat, de prise de profit ou de coupe des pertes)"
     }}
     """
     # Tentatives multiples en cas de surcharge temporaire du serveur de l'IA
