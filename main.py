@@ -132,40 +132,41 @@ def ask_trading_brain(portfolio, watchlist):
     Capital initial : 1000 $ CAD.
     État actuel :
     - Liquidités disponibles : {portfolio['cash_cad']:.2f} $ CAD
-    - Positions ouvertes (avec coût moyen et quantité) : {portfolio['positions']}
+    - Positions ouvertes (avec coût total payé et quantité) : {portfolio['positions']}
     
     Données de marché récentes (prix actuels, momentum, historique) :
     {json.dumps(market_snapshot, indent=2)}
 
     Règles strictes de trading quotidien (Maximiser les gains, minimiser les pertes) :
     1. Frais de change : 1,5% à l'achat et 1,5% à la vente sur les actions US (3% aller-retour). Sur du trading à court terme, ces frais détruisent la rentabilité. Privilégie massivement le marché canadien (.TO). N'achète du US que si le gain immédiat anticipé dépasse largement 3%.
-    2. Préservation du capital : Tu agis 0 à 2 fois par jour. Si le marché est plat, incertain, ou sans momentum clair, choisis HOLD. Rester en cash est une position valide.
-    3. Gestion des risques (30%) : Ne risque jamais plus de 30% du capital total sur un seul titre.
-    4. Stop-Loss et Take-Profit (CRUCIAL) : Surveille activement tes "Positions ouvertes" en comparant leur coût avec le prix actuel du marché. 
-       - Coupe tes pertes de manière stricte : si une position perd de son élan (ex: -3% à -5%), vends (SELL) pour limiter la casse.
-       - Sécurise tes gains : si une position fait un bond rapide (ex: +3% à +7%), n'hésite pas à vendre (SELL) pour encaisser le profit. Ne t'attache pas aux actions.
+    2. Préservation du capital : Tu agis 0 à 2 fois par jour. Si le marché est plat ou incertain, choisis HOLD. Rester en cash est une excellente décision.
+    3. Gestion des risques : Ne risque jamais plus de 30% du capital total sur un seul titre.
+    4. Stop-Loss et Take-Profit (CRUCIAL) : Compare activement le prix actuel du marché avec le "total_cost_cad" de nos positions ouvertes. 
+       - Coupe tes pertes de manière stricte : si une position perd de son élan (ex: chute brutale), vends (SELL) immédiatement pour limiter la casse.
+       - Sécurise tes gains : si une position fait un bond rapide, vends (SELL) pour encaisser le profit. Ne sois pas gourmand.
 
-    AVANT de prendre ta décision, réunis ton comité d'experts pour analyser la dynamique DU JOUR :
+    AVANT de prendre ta décision, réunis ton comité d'experts pour analyser la dynamique DU JOUR. 
+    ATTENTION : Vous NE DEVEZ PAS chercher un consensus mou. Le Sceptique DOIT contredire l'Opérateur et le Visionnaire. Je veux voir vos désaccords pour éviter les risques cachés.
     
-    1. L'Opérateur (Exécution) : Analyse le coût réel (frais FX) et la pertinence d'agir aujourd'hui. Vaut-il mieux encaisser un profit (SELL) ou conserver nos liquidités ?
-    2. Le Sceptique (Risque) : Identifie les faiblesses immédiates. Est-ce qu'une de nos positions actuelles chute et nécessite une vente de protection d'urgence (Stop-Loss) ?
-    3. Le Visionnaire (Occasion) : Identifie le momentum à très court terme. Y a-t-il une opportunité immédiate justifiant un achat (BUY) aujourd'hui ?
+    1. L'Opérateur (Exécution) : Analyse le coût réel (frais FX de 3% si US) et la pertinence d'agir aujourd'hui. Vaut-il mieux encaisser un profit (SELL) ou conserver nos liquidités ?
+    2. Le Sceptique (Risque - Joue l'avocat du diable) : Contredis les autres. Cherche les raisons pour lesquelles on va perdre de l'argent. Est-ce qu'une de nos positions actuelles chute et nécessite une vente d'urgence (Stop-Loss) ?
+    3. Le Visionnaire (Occasion) : Identifie le momentum à très court terme. Y a-t-il une opportunité immédiate d'achat (BUY) ou de prise de profit (Take-Profit) aujourd'hui ?
 
     Réponds EXCLUSIVEMENT avec un JSON au format exact suivant (aucun texte avant ou après) :
     {{
       "experts": {{
-        "operateur": "Avis sur les frais, l'exécution et la gestion des liquidités du jour...",
-        "sceptique": "Avis sur les risques immédiats, l'état des positions ouvertes et les déclenchements de Stop-Loss...",
-        "visionnaire": "Avis sur le momentum du jour et les opportunités de Take-Profit ou d'achat..."
+        "operateur": "Avis pragmatique sur les frais...",
+        "sceptique": "Avis très pessimiste s'opposant aux achats ou justifiant une vente de protection...",
+        "visionnaire": "Avis optimiste sur le momentum du jour..."
       }},
-      "synthese": "Résumé des avis du comité en 2 phrases...",
+      "synthese": "Résumé en acceptant explicitement qu'il y a un désaccord, puis décision tranchée.",
       "action": "BUY" | "SELL" | "HOLD",
       "ticker": "SYMBOLE",
       "amount_cad": 150.0,
-      "reasoning": "Explication finale (basée sur la synthèse, justifiant la logique d'achat, de prise de profit ou de coupe des pertes)"
+      "reasoning": "Explication finale (basée sur la synthèse, justifiant la logique d'achat, de vente ou de conservation)"
     }}
     """
-    # Tentatives multiples en cas de surcharge temporaire du serveur de l'IA
+    
     models_to_try = ["gemini-2.5-flash", "gemini-2.0-flash"]
     for model_name in models_to_try:
         for attempt in range(3):
@@ -180,8 +181,8 @@ def ask_trading_brain(portfolio, watchlist):
                 print(f"Tentative échouée avec {model_name} (essai {attempt+1}/3): {e}")
                 time.sleep(3)
                 
-    # Sécurité par défaut si l'API est injoignable
-    return {"action": "HOLD", "ticker": "VFV.TO", "amount_cad": 0.0, "reasoning": "API temporairement occupée, attente de la prochaine exécution."}
+    # Sécurité par défaut si l'API est injoignable (corrigé pour éviter l'erreur sur le ticker)
+    return {"action": "HOLD", "ticker": "AUCUN", "amount_cad": 0.0, "reasoning": "API temporairement occupée, attente de la prochaine exécution."}
 
 def run_weekly_agent():
     portfolio = load_portfolio()
@@ -190,7 +191,7 @@ def run_weekly_agent():
     decision = ask_trading_brain(portfolio, watchlist)
     print(f"Décision reçue : {decision}")
 
-    if decision["action"] in ["BUY", "SELL"]:
+    if decision["action"] in ["BUY", "SELL"] and decision["ticker"] in watchlist:
         execute_order(
             portfolio,
             ticker=decision["ticker"],
@@ -209,7 +210,7 @@ def run_weekly_agent():
                 total_val_cad += pos["shares"] * data["price"]
 
     portfolio["history_valuation"].append({
-        "date": datetime.now().strftime("%Y-%m-%d"),
+        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "total_value_cad": round(total_val_cad, 2)
     })
     save_portfolio(portfolio)
