@@ -1,0 +1,9 @@
+yfinance
+google-genai
+streamlit
+pandas
+yfinance
+google-genai
+streamlit
+pandas
+plotly
