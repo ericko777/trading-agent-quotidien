@@ -167,7 +167,7 @@ def ask_trading_brain(portfolio, watchlist):
     }}
     """
     
-    models_to_try = ["gemini-2.5-flash", "gemini-2.0-flash"]
+    models_to_try = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-2.5-flash"]
     for model_name in models_to_try:
         for attempt in range(3):
             try:
