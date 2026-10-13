@@ -1,0 +1,2 @@
+Date,Ticker,Action,Shares,Price,FX_Rate,Fee_CAD,Cash_CAD_Left,Reason
+2026-10-13 21:15:53,SHOP.TO,BUY,1.0,251.04,1.0,0.0,748.96,"Achat momentum tactique sur SHOP.TO suite à la cassure haussière vers 251,04 $ CAD. L'actif est côté sur le TSX (zéro frais FX Wealthsimple) et l'allocation de 251,04 $ CAD respecte scrupuleusement la limite de risque de 30 % du capital total (1000 $ CAD)."
