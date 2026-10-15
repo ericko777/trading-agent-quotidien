@@ -8,79 +8,148 @@ from google import genai
 from google.genai import types
 
 DATA_DIR = "trading_agent_data"
-PORTFOLIO_FILE = os.path.join(DATA_DIR, "portfolio.json")
-LOG_FILE = os.path.join(DATA_DIR, "trades.csv")
+PROMPTS_DIR = "prompts"
 
-def load_portfolio():
+# Liste élargie de 12 titres (Canadiens .TO et Géants US) analysés à chaque requête
+WATCHLIST = [
+    "VFV.TO", "XEQT.TO", "SHOP.TO", "CSU.TO", 
+    "RY.TO", "TD.TO", "ATD.TO", "DOL.TO", 
+    "AAPL", "MSFT", "NVDA", "TSLA"
+]
+
+# Configuration des 5 Bots
+BOTS = {
+    "momentum": {"name": "🔥 Trend Follower (Momentum)", "prompt_file": "momentum.txt"},
+    "value": {"name": "🏛️ Value Compounder (Buffett)", "prompt_file": "value.txt"},
+    "quant": {"name": "⚡ Mean Reverter (Quant)", "prompt_file": "quant.txt"},
+    "growth": {"name": "🚀 Growth Breakout (Tech)", "prompt_file": "growth.txt"},
+    "macro": {"name": "🌍 Macro Sentiment (Dalio)", "prompt_file": "macro.txt"}
+}
+
+def ensure_dirs():
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
-    if not os.path.exists(PORTFOLIO_FILE):
+
+def get_files(bot_id):
+    return {
+        "portfolio": os.path.join(DATA_DIR, f"portfolio_{bot_id}.json"),
+        "trades": os.path.join(DATA_DIR, f"trades_{bot_id}.csv"),
+        "logs": os.path.join(DATA_DIR, f"logs_{bot_id}.json")
+    }
+
+def load_portfolio(bot_id):
+    ensure_dirs()
+    filepath = get_files(bot_id)["portfolio"]
+    if not os.path.exists(filepath):
         initial_state = {
             "cash_cad": 1000.0,
             "positions": {},
             "history_valuation": []
         }
-        with open(PORTFOLIO_FILE, "w") as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             json.dump(initial_state, f, indent=2)
         return initial_state
-    with open(PORTFOLIO_FILE, "r") as f:
+    with open(filepath, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def save_portfolio(data):
-    with open(PORTFOLIO_FILE, "w") as f:
+def save_portfolio(bot_id, data):
+    filepath = get_files(bot_id)["portfolio"]
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
-def log_trade(date, ticker, action, shares, price, fx_rate, fee_cad, cash_left, reason):
-    file_exists = os.path.isfile(LOG_FILE)
-    with open(LOG_FILE, mode="a", newline="") as f:
+def log_trade(bot_id, date, ticker, action, shares, price, fx_rate, fee_cad, cash_left, reason):
+    filepath = get_files(bot_id)["trades"]
+    file_exists = os.path.isfile(filepath)
+    with open(filepath, mode="a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if not file_exists:
             writer.writerow(["Date", "Ticker", "Action", "Shares", "Price", "FX_Rate", "Fee_CAD", "Cash_CAD_Left", "Reason"])
         writer.writerow([date, ticker, action, round(shares, 4), round(price, 2), round(fx_rate, 4), round(fee_cad, 2), round(cash_left, 2), reason])
 
-def get_market_data(ticker):
-    stock = yf.Ticker(ticker)
-    history = stock.history(period="1mo")
-    if history.empty:
-        return None
-    current_price = history["Close"].iloc[-1]
-    
-    fx = yf.Ticker("CADUSD=X").history(period="1d")
-    cad_to_usd = fx["Close"].iloc[-1]
-    usd_to_cad = 1.0 / cad_to_usd
-    
-    return {
-        "price": current_price,
-        "is_us": not ticker.endswith(".TO"),
-        "usd_to_cad": usd_to_cad,
-        "history_close": history["Close"].tail(5).tolist()
+def log_ai_request(bot_id, date, model_used, market_snapshot, decision, order_executed):
+    """Enregistre TOUTES les réflexions de l'IA (même les HOLD) pour pouvoir les lire sur le Dashboard."""
+    filepath = get_files(bot_id)["logs"]
+    logs = []
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                logs = json.load(f)
+        except Exception:
+            logs = []
+
+    log_entry = {
+        "date": date,
+        "model": model_used,
+        "tickers_analyzed_count": len(market_snapshot),
+        "tickers_analyzed": list(market_snapshot.keys()),
+        "action": decision.get("action", "HOLD"),
+        "ticker": decision.get("ticker", "AUCUN"),
+        "amount_cad": decision.get("amount_cad", 0.0),
+        "order_executed": order_executed,
+        "experts": decision.get("experts", {}),
+        "synthese": decision.get("synthese", ""),
+        "reasoning": decision.get("reasoning", "")
     }
 
-def execute_order(portfolio, ticker, action, amount_cad, reason):
-    data = get_market_data(ticker)
+    logs.append(log_entry)
+    # On garde les 100 dernières requêtes pour garder un fichier léger
+    logs = logs[-100:]
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(logs, f, indent=2, ensure_ascii=False)
+
+def fetch_all_market_data(watchlist):
+    """Récupère les données du marché une seule fois pour tous les bots."""
+    fx = yf.Ticker("CADUSD=X").history(period="5d")
+    cad_to_usd = fx["Close"].iloc[-1] if not fx.empty else 0.73
+    usd_to_cad = 1.0 / cad_to_usd
+
+    market_data = {}
+    for ticker in watchlist:
+        try:
+            stock = yf.Ticker(ticker)
+            history = stock.history(period="1mo")
+            if not history.empty:
+                closes = [round(x, 2) for x in history["Close"].tail(5).tolist()]
+                change_5d_pct = round(((closes[-1] - closes[0]) / closes[0]) * 100, 2) if len(closes) > 1 else 0.0
+                market_data[ticker] = {
+                    "price": float(history["Close"].iloc[-1]),
+                    "is_us": not ticker.endswith(".TO"),
+                    "usd_to_cad": float(usd_to_cad),
+                    "history_close": closes,
+                    "variation_5j_pct": f"{change_5d_pct}%"
+                }
+        except Exception as e:
+            print(f"Erreur téléchargement pour {ticker}: {e}")
+    return market_data
+
+def read_strategy_prompt(filename):
+    filepath = os.path.join(PROMPTS_DIR, filename)
+    if os.path.exists(filepath):
+        with open(filepath, "r", encoding="utf-8") as f:
+            return f.read()
+    else:
+        print(f"ATTENTION: Fichier {filepath} introuvable. Utilisation d'un prompt par défaut.")
+        return "Tu es un gestionnaire de portefeuille prudent opérant sur Wealthsimple."
+
+def execute_order(bot_id, portfolio, ticker, action, amount_cad, reason, market_data, today):
+    data = market_data.get(ticker)
     if not data:
-        print(f"Erreur données marché pour {ticker}")
         return False
 
     price = data["price"]
     is_us = data["is_us"]
     usd_to_cad = data["usd_to_cad"]
     fx_fee_rate = 0.015 if is_us else 0.0
-    today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     if action == "BUY":
-        if amount_cad > portfolio["cash_cad"]:
-            print(f"Fonds insuffisants : {amount_cad}$ demandé, {portfolio['cash_cad']}$ dispo.")
+        if amount_cad <= 0 or amount_cad > portfolio["cash_cad"]:
+            print(f"[{bot_id}] Fonds insuffisants ou montant invalide ({amount_cad}$ demandé, {portfolio['cash_cad']:.2f}$ dispo).")
             return False
 
         fee_cad = amount_cad * fx_fee_rate
         net_invest_cad = amount_cad - fee_cad
-
-        if is_us:
-            invest_usd = net_invest_cad / usd_to_cad
-            shares = invest_usd / price
-        else:
-            shares = net_invest_cad / price
+        shares = (net_invest_cad / usd_to_cad) / price if is_us else net_invest_cad / price
 
         portfolio["cash_cad"] -= amount_cad
         pos = portfolio["positions"].get(ticker, {"shares": 0.0, "total_cost_cad": 0.0})
@@ -89,132 +158,150 @@ def execute_order(portfolio, ticker, action, amount_cad, reason):
         pos["avg_price_cad"] = pos["total_cost_cad"] / pos["shares"]
         portfolio["positions"][ticker] = pos
 
-        log_trade(today, ticker, "BUY", shares, price, usd_to_cad if is_us else 1.0, fee_cad, portfolio["cash_cad"], reason)
-        print(f"Achat exécuté : {shares:.4f} actions de {ticker} (Frais: {fee_cad:.2f}$ CAD)")
+        log_trade(bot_id, today, ticker, "BUY", shares, price, usd_to_cad if is_us else 1.0, fee_cad, portfolio["cash_cad"], reason)
         return True
 
     elif action == "SELL":
         pos = portfolio["positions"].get(ticker)
         if not pos or pos["shares"] <= 0:
-            print(f"Position inexistante pour {ticker}")
             return False
 
         shares = pos["shares"]
-        if is_us:
-            gross_cad = (shares * price) * usd_to_cad
-        else:
-            gross_cad = shares * price
-
+        gross_cad = (shares * price) * usd_to_cad if is_us else shares * price
         fee_cad = gross_cad * fx_fee_rate
         net_cad = gross_cad - fee_cad
 
         portfolio["cash_cad"] += net_cad
         del portfolio["positions"][ticker]
 
-        log_trade(today, ticker, "SELL", shares, price, usd_to_cad if is_us else 1.0, fee_cad, portfolio["cash_cad"], reason)
-        print(f"Vente exécutée : {ticker} (Gain net: {net_cad:.2f}$, Frais: {fee_cad:.2f}$ CAD)")
+        log_trade(bot_id, today, ticker, "SELL", shares, price, usd_to_cad if is_us else 1.0, fee_cad, portfolio["cash_cad"], reason)
         return True
+    return False
 
-def ask_trading_brain(portfolio, watchlist):
+def ask_trading_brain(bot_id, portfolio, market_snapshot, strategy_text):
     client = genai.Client()
-    market_snapshot = {}
-    for ticker in watchlist:
-        d = get_market_data(ticker)
-        if d:
-            market_snapshot[ticker] = {
-                "dernier_prix": round(d["price"], 2),
-                "marche": "US" if d["is_us"] else "TSX",
-                "historique_5j": [round(x, 2) for x in d["history_close"]]
-            }
 
     prompt = f"""
-    Tu es un gestionnaire de portefeuille automatisé de type "Swing/Day Trader" opérant sur Wealthsimple avec un compte canadien (CAD).
-    Capital initial : 1000 $ CAD.
-    État actuel :
-    - Liquidités disponibles : {portfolio['cash_cad']:.2f} $ CAD
-    - Positions ouvertes (avec coût total payé et quantité) : {portfolio['positions']}
-    
-    Données de marché récentes (prix actuels, momentum, historique) :
+    === INSTRUCTIONS DE STRATÉGIE SPÉCIFIQUE ===
+    {strategy_text}
+
+    === ÉTAT ACTUEL DE TON PORTEFEUILLE (Compte Canadien CAD) ===
+    - Capital initial : 1000.00 $ CAD
+    - Liquidités disponibles (Cash) : {portfolio['cash_cad']:.2f} $ CAD
+    - Positions actuellement en portefeuille : {json.dumps(portfolio['positions'], indent=2)}
+
+    === DONNÉES DU MARCHÉ ({len(market_snapshot)} TITRES ANALYSÉS AUJOURD'HUI) ===
     {json.dumps(market_snapshot, indent=2)}
 
-    Règles strictes de trading quotidien (Maximiser les gains, minimiser les pertes) :
-    1. Frais de change : 1,5% à l'achat et 1,5% à la vente sur les actions US (3% aller-retour). Sur du trading à court terme, ces frais détruisent la rentabilité. Privilégie massivement le marché canadien (.TO). N'achète du US que si le gain immédiat anticipé dépasse largement 3%.
-    2. Préservation du capital : Tu agis 0 à 2 fois par jour. Si le marché est plat ou incertain, choisis HOLD. Rester en cash est une excellente décision.
-    3. Gestion des risques : Ne risque jamais plus de 30% du capital total sur un seul titre.
-    4. Stop-Loss et Take-Profit (CRUCIAL) : Compare activement le prix actuel du marché avec le "total_cost_cad" de nos positions ouvertes. 
-       - Coupe tes pertes de manière stricte : si une position perd de son élan (ex: chute brutale), vends (SELL) immédiatement pour limiter la casse.
-       - Sécurise tes gains : si une position fait un bond rapide, vends (SELL) pour encaisser le profit. Ne sois pas gourmand.
+    === PROCESSUS DE DÉLIBÉRATION OBLIGATOIRE ===
+    Avant de trancher, fais débattre tes 3 experts (L'Opérateur, Le Sceptique, Le Visionnaire).
+    Le Sceptique DOIT jouer l'avocat du diable et souligner les dangers ou les frais.
+    Explique clairement dans ton raisonnement pourquoi tu choisis d'agir (BUY/SELL) ou pourquoi aucun des {len(market_snapshot)} titres ne mérite d'action aujourd'hui (HOLD).
 
-    AVANT de prendre ta décision, réunis ton comité d'experts pour analyser la dynamique DU JOUR. 
-    ATTENTION : Vous NE DEVEZ PAS chercher un consensus mou. Le Sceptique DOIT contredire l'Opérateur et le Visionnaire. Je veux voir vos désaccords pour éviter les risques cachés.
-    
-    1. L'Opérateur (Exécution) : Analyse le coût réel (frais FX de 3% si US) et la pertinence d'agir aujourd'hui. Vaut-il mieux encaisser un profit (SELL) ou conserver nos liquidités ?
-    2. Le Sceptique (Risque - Joue l'avocat du diable) : Contredis les autres. Cherche les raisons pour lesquelles on va perdre de l'argent. Est-ce qu'une de nos positions actuelles chute et nécessite une vente d'urgence (Stop-Loss) ?
-    3. Le Visionnaire (Occasion) : Identifie le momentum à très court terme. Y a-t-il une opportunité immédiate d'achat (BUY) ou de prise de profit (Take-Profit) aujourd'hui ?
-
-    Réponds EXCLUSIVEMENT avec un JSON au format exact suivant (aucun texte avant ou après) :
+    Réponds EXCLUSIVEMENT avec un objet JSON valide suivant exactement cette structure :
     {{
       "experts": {{
-        "operateur": "Avis pragmatique sur les frais...",
-        "sceptique": "Avis très pessimiste s'opposant aux achats ou justifiant une vente de protection...",
-        "visionnaire": "Avis optimiste sur le momentum du jour..."
+        "operateur": "Avis détaillé de l'Opérateur sur l'exécution, les liquidités et les frais...",
+        "sceptique": "Avis critique du Sceptique (avocat du diable) sur les risques et les positions...",
+        "visionnaire": "Avis du Visionnaire sur les opportunités parmi les titres analysés..."
       }},
-      "synthese": "Résumé en acceptant explicitement qu'il y a un désaccord, puis décision tranchée.",
+      "synthese": "Synthèse du débat du comité en 2-3 phrases...",
       "action": "BUY" | "SELL" | "HOLD",
-      "ticker": "SYMBOLE",
-      "amount_cad": 150.0,
-      "reasoning": "Explication finale (basée sur la synthèse, justifiant la logique d'achat, de vente ou de conservation)"
+      "ticker": "SYMBOLE_CHOISI_OU_AUCUN",
+      "amount_cad": 250.0,
+      "reasoning": "Explication complète et transparente de la décision finale."
     }}
     """
-    
-    models_to_try = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-2.5-flash"]
+
+    models_to_try = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"]
     for model_name in models_to_try:
-        for attempt in range(3):
+        for attempt in range(2):
             try:
                 response = client.models.generate_content(
                     model=model_name,
                     contents=prompt,
                     config=types.GenerateContentConfig(response_mime_type="application/json")
                 )
-                return json.loads(response.text)
+                return json.loads(response.text), model_name
             except Exception as e:
-                print(f"Tentative échouée avec {model_name} (essai {attempt+1}/3): {e}")
-                time.sleep(3)
-                
-    # Sécurité par défaut si l'API est injoignable (corrigé pour éviter l'erreur sur le ticker)
-    return {"action": "HOLD", "ticker": "AUCUN", "amount_cad": 0.0, "reasoning": "API temporairement occupée, attente de la prochaine exécution."}
+                print(f"[{bot_id}] Essai échoué sur {model_name} (tentative {attempt+1}): {e}")
+                time.sleep(4)
 
-def run_weekly_agent():
-    portfolio = load_portfolio()
-    watchlist = ["VFV.TO", "XEQT.TO", "SHOP.TO", "TD.TO", "AAPL", "MSFT"]
+    return {
+        "experts": {
+            "operateur": "API indisponible.",
+            "sceptique": "API indisponible.",
+            "visionnaire": "API indisponible."
+        },
+        "synthese": "Impossible de joindre les modèles Gemini lors de cette exécution.",
+        "action": "HOLD",
+        "ticker": "AUCUN",
+        "amount_cad": 0.0,
+        "reasoning": "Mise en attente automatique suite à une surcharge de l'API."
+    }, "erreur-api"
+
+def run_arena():
+    print("Téléchargement des données du marché...")
+    raw_market_data = fetch_all_market_data(WATCHLIST)
     
-    decision = ask_trading_brain(portfolio, watchlist)
-    print(f"Décision reçue : {decision}")
+    # Préparation du résumé propre envoyé aux IA
+    market_snapshot = {}
+    for sym, d in raw_market_data.items():
+        market_snapshot[sym] = {
+            "prix_actuel": round(d["price"], 2),
+            "devise_et_marche": "USD (Frais FX 1.5%)" if d["is_us"] else "CAD (0% Frais)",
+            "historique_5j": d["history_close"],
+            "variation_5j": d["variation_5j_pct"]
+        }
 
-    if decision["action"] in ["BUY", "SELL"] and decision["ticker"] in watchlist:
-        execute_order(
-            portfolio,
-            ticker=decision["ticker"],
-            action=decision["action"],
-            amount_cad=float(decision.get("amount_cad", 0)),
-            reason=decision.get("reasoning", "")
-        )
+    today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    total_val_cad = portfolio["cash_cad"]
-    for sym, pos in portfolio["positions"].items():
-        data = get_market_data(sym)
-        if data:
-            if data["is_us"]:
-                total_val_cad += (pos["shares"] * data["price"]) * data["usd_to_cad"]
-            else:
-                total_val_cad += pos["shares"] * data["price"]
+    for index, (bot_id, bot_info) in enumerate(BOTS.items()):
+        print(f"\n--- Exécution de {bot_info['name']} ---")
+        portfolio = load_portfolio(bot_id)
+        strategy_text = read_strategy_prompt(bot_info["prompt_file"])
 
-    portfolio["history_valuation"].append({
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "total_value_cad": round(total_val_cad, 2)
-    })
-    save_portfolio(portfolio)
-    print(f"Valeur actuelle du portefeuille : {total_val_cad:.2f} $ CAD")
+        decision, model_used = ask_trading_brain(bot_id, portfolio, market_snapshot, strategy_text)
+        print(f"[{bot_id}] Décision ({model_used}) : {decision.get('action')} sur {decision.get('ticker')}")
+
+        order_executed = False
+        action = decision.get("action", "HOLD")
+        ticker = decision.get("ticker", "AUCUN")
+
+        if action in ["BUY", "SELL"] and ticker in raw_market_data:
+            order_executed = execute_order(
+                bot_id=bot_id,
+                portfolio=portfolio,
+                ticker=ticker,
+                action=action,
+                amount_cad=float(decision.get("amount_cad", 0)),
+                reason=decision.get("reasoning", ""),
+                market_data=raw_market_data,
+                today=today
+            )
+
+        # Enregistrement systématique dans le journal des requêtes (même si HOLD)
+        log_ai_request(bot_id, today, model_used, market_snapshot, decision, order_executed)
+
+        # Calcul de la valeur totale du portefeuille du bot
+        total_val_cad = portfolio["cash_cad"]
+        for sym, pos in portfolio["positions"].items():
+            d = raw_market_data.get(sym)
+            if d:
+                if d["is_us"]:
+                    total_val_cad += (pos["shares"] * d["price"]) * d["usd_to_cad"]
+                else:
+                    total_val_cad += pos["shares"] * d["price"]
+
+        portfolio["history_valuation"].append({
+            "date": today,
+            "total_value_cad": round(total_val_cad, 2)
+        })
+        save_portfolio(bot_id, portfolio)
+
+        # Pause de 15 secondes entre chaque bot pour respecter la limite de 5 RPM de Gemini
+        if index < len(BOTS) - 1:
+            time.sleep(15)
 
 if __name__ == "__main__":
-    run_weekly_agent()
+    run_arena()
