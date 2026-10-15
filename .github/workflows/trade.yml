@@ -2,9 +2,10 @@ name: Daily Trading Agent
 
 on:
   schedule:
-    # S'exécute du Lundi au Vendredi (1-5)
-    # À 14h30 et 19h30 UTC (Ce qui correspond à 10h30 et 15h30 heure de l'Est / Québec)
-    - cron: '30 14,19 * * 1-5'
+    # S'exécute du Lundi au Vendredi à 14h00, 17h00 et 19h30 UTC
+    # (Soit 10h00, 13h00 et 15h30 heure du Québec)
+    - cron: '0 14,17 * * 1-5'
+    - cron: '30 19 * * 1-5'
   workflow_dispatch: 
 
 jobs:
