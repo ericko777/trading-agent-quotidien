@@ -567,7 +567,7 @@ with tab_trades:
             <div class="rank-card" style="display:block;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                     <div>{format_badge(f'{t_act} {t_sym}')} <span style="font-size:0.75rem; color:#94a3b8; margin-left:6px;">{t_dt}</span></div>
-                    <div style="font-size:0.82rem; font-weight:700; color:#f8fafc;">Prix : {t_px:.2f}$\vert{} Frais : -{t_fee:.2f}$</div>
+                    <div style="font-size:0.82rem; font-weight:700; color:#f8fafc;">Prix : {t_px:.2f}$ &nbsp;|&nbsp; Frais : -{t_fee:.2f}$</div>
                 </div>
                 <div style="font-size:0.78rem; color:#cbd5e1;">
                     <b>Quantité :</b> {t_sh:.4f} actions • <b>Cash restant :</b> {t_cash:.2f} $ CAD
