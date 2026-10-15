@@ -1,0 +1,16 @@
+{
+  "cash_cad": 0.0,
+  "positions": {
+    "CSU.TO": {
+      "shares": 0.3045289537073612,
+      "total_cost_cad": 1000.0,
+      "avg_price_cad": 3283.760009765625
+    }
+  },
+  "history_valuation": [
+    {
+      "date": "2026-10-15 21:34:50",
+      "total_value_cad": 1000.0
+    }
+  ]
+}

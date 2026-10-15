@@ -1,0 +1,2 @@
+Date,Ticker,Action,Shares,Price,FX_Rate,Fee_CAD,Cash_CAD_Left,Reason
+2026-10-15 21:34:50,VFV.TO,BUY,2.0533,194.81,1.0,0.0,600.0,Application stricte de la règle 1 (déploiement de 40% du capital en cash car supérieur à 30%) et de la règle 3 (achat sur repli de qualité avec variation_5j légèrement négative à -0.5% et stabilisation des derniers prix). Le tout sur un actif canadien éligible à 0% de frais (règle 2).

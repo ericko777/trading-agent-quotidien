@@ -1,0 +1,16 @@
+{
+  "cash_cad": 600.0,
+  "positions": {
+    "SHOP.TO": {
+      "shares": 1.5839702290165818,
+      "total_cost_cad": 400.0,
+      "avg_price_cad": 252.52999877929688
+    }
+  },
+  "history_valuation": [
+    {
+      "date": "2026-10-15 21:34:50",
+      "total_value_cad": 1000.0
+    }
+  ]
+}

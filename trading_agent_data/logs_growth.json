@@ -1,0 +1,32 @@
+[
+  {
+    "date": "2026-10-15 21:34:50",
+    "model": "gemini-3.5-flash-lite",
+    "tickers_analyzed_count": 12,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "SHOP.TO",
+    "amount_cad": 450.0,
+    "order_executed": true,
+    "experts": {
+      "operateur": "Nous avons 1000.00 $ CAD en liquidités. Les règles me permettent d'allouer jusqu'à 45-50% sur une conviction explosive. CSU.TO affiche une performance de +12.77% avec un historique de prix en hausse constante (2912 à 3283) et 0% de frais, ce qui est parfait pour maximiser le capital sans friction de change.",
+      "sceptique": "Attention ! CSU.TO se négocie à plus de 3200 $ par action, ce qui signifie que notre capital de 1000 $ ne suffira pas pour acheter une action entière si nous voulons fractionner, ou alors il faut utiliser la totalité des liquidités si le courtier le permet, mais cela représente un risque de concentration absolue à 100%. Regardons plutôt SHOP.TO à 252.53 $ avec +7.83% de variation sur 5 jours : c'est beaucoup plus accessible et cela respecte la règle de concentration agressive sans tout miser sur un seul titre hors de prix.",
+      "visionnaire": "Le véritable leader du momentum aujourd'hui est Constellation Software (CSU.TO) avec une explosion de +12.77%, mais Shopify (SHOP.TO) offre un profil de breakout technologique pur avec +7.83% et un historique sur 5 jours en cassure nette (234 à 252). SHOP.TO est le champion canadien de la croissance par excellence pour initier notre premier gros assaut."
+    },
+    "synthese": "Le comité s'accorde sur la nécessité d'attaquer le marché avec nos liquidités en ciblant un champion canadien sans frais. Bien que CSU.TO affiche la plus forte hausse, SHOP.TO offre un meilleur équilibre de prix pour notre capital de 1000 $ tout en validant un breakout puissant de +7.83%.",
+    "reasoning": "Achat agressif de SHOP.TO pour 450.00 $ CAD (soit 45% du portefeuille, respectant la limite de concentration). Le titre affiche une variation sur 5 jours de +7.83% avec un historique de prix en accélération constante (franchissement de sommets), le tout sans frais de courtage ni de change (0% sur le marché canadien)."
+  }
+]

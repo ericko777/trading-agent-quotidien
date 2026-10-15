@@ -1,0 +1,2 @@
+Date,Ticker,Action,Shares,Price,FX_Rate,Fee_CAD,Cash_CAD_Left,Reason
+2026-10-15 21:34:50,VFV.TO,BUY,1.54,194.81,1.0,0.0,700.0,"Application de la règle de détection d'anomalie sur 5 jours : VFV.TO est le seul titre .TO affichant une variation négative (-0.5%), offrant un point d'entrée idéal pour un retour à la moyenne tout en respectant l'interdiction absolue des frais FX."

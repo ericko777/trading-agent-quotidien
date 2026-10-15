@@ -1,0 +1,2 @@
+Date,Ticker,Action,Shares,Price,FX_Rate,Fee_CAD,Cash_CAD_Left,Reason
+2026-10-15 21:34:50,SHOP.TO,BUY,1.584,252.53,1.0,0.0,600.0,"Application stricte de la règle anti-cash dormant : avec 100% de liquidités et un capital initial de 1000 CAD, nous investissons 40% du portefeuille (400 CAD) sur SHOP.TO. Ce titre canadien (.TO) présente une excellente variation sur 5 jours (+7.83%) sans aucuns frais de change (0% vs 3% sur les US), permettant d'enclencher la stratégie de croissance exponentielle et de rotation agressive."
