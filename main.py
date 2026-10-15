@@ -213,7 +213,8 @@ def ask_trading_brain(bot_id, portfolio, market_snapshot, strategy_text):
     }}
     """
 
-    models_to_try = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"]
+    # On place gemini-3.5-flash-lite et 3.1-flash-lite en premier : 500 requêtes/jour et 15 requêtes/minute !
+    models_to_try = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash"]
     for model_name in models_to_try:
         for attempt in range(2):
             try:
