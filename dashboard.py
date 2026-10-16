@@ -36,6 +36,15 @@ def to_qc_time(date_str):
     except:
         return date_str
 
+def clamp_to_market(dt_str):
+    """Si l'heure est hors 9h30-16h00, ramène le point à l'ouverture (9h30) du même jour,
+    sinon il tombe dans les rangebreaks de l'axe X et n'est pas affiché."""
+    dt = pd.to_datetime(dt_str)
+    h = dt.hour + dt.minute / 60
+    if h < 9.5 or h >= 16:
+        return dt.normalize() + pd.Timedelta(hours=9, minutes=30)
+    return dt
+
 # --- CSS SUR MESURE POUR ÉCRAN AMOLED ---
 st.markdown("""
 <style>
@@ -182,6 +191,8 @@ for bot_id, info in BOTS.items():
             if idx == 0:
                 # RÈGLE ABSOLUE : La toute première ligne du CSV vaut exactement 1000$ (Capital initial)
                 matched_val = CAPITAL_INITIAL
+                # Point de départ ramené à l'ouverture si le trade a eu lieu hors des heures de marché
+                t_dt = clamp_to_market(t_date)
             else:
                 # Les lignes suivantes prennent la valeur enregistrée dans l'historique du portfolio à cette date précise
                 matched_val = CAPITAL_INITIAL
@@ -189,13 +200,14 @@ for bot_id, info in BOTS.items():
                     if to_qc_time(h_item["date"]) == t_date:
                         matched_val = float(h_item["total_value_cad"])
                         break
+                t_dt = pd.to_datetime(t_date)
 
             courbes_list.append({
                 "Date": t_date,
                 "Bot": bot_name,
                 "Valeur (CAD)": matched_val,
                 "Type": "Run",
-                "Date_dt": pd.to_datetime(t_date)
+                "Date_dt": t_dt
             })
 
     # Ajout du point Live actuel au bout
