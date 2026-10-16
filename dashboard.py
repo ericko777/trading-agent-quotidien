@@ -89,13 +89,15 @@ def get_live_prices(tickers_tuple):
 
 @st.cache_data(ttl=300, show_spinner=False)
 def get_intraday_stock_data(ticker):
-    """Télécharge l'historique détaillé (Heure par heure) d'une action pour le graphique Candlestick."""
+    """Télécharge l'historique détaillé (Heure par heure) d'une action en heure locale du Québec."""
     try:
         stock = yf.Ticker(ticker)
         df = stock.history(period="7d", interval="1h")
         if not df.empty:
-            df.index = df.index.tz_convert('America/Toronto')
+            # Conversion en heure du Québec et suppression du fuseau pour s'aligner exactement avec l'axe X de "Tous"
+            df.index = df.index.tz_convert('America/Toronto').tz_localize(None)
             df.reset_index(inplace=True)
+            df.rename(columns={df.columns[0]: "Datetime"}, inplace=True)
             return df
     except Exception:
         pass
@@ -251,14 +253,19 @@ st.markdown("<h3 style='margin-bottom:8px;'>📊 Terminal Graphique</h3>", unsaf
 options_vue = ["Tous (Portefeuilles)"] + sorted(list(all_open_tickers))
 vue_choisie = st.selectbox("Sélectionne ce que tu veux analyser :", options_vue, label_visibility="collapsed")
 
-if vue_choisie == "Tous (Portefeuilles)":
-    nb_points = st.radio("Points affichés :", options=[10, 20, 50, 100, "Tous"], horizontal=True, label_visibility="collapsed")
-    df_courbes = pd.DataFrame(courbes_list)
-    
-    if nb_points != "Tous":
-        df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
+nb_points = st.radio("Points affichés :", options=[10, 20, 50, 100, "Tous"], horizontal=True, label_visibility="collapsed")
+df_courbes = pd.DataFrame(courbes_list)
 
-    fig_comp = px.line(df_courbes, x="Date", y="Valeur (CAD)", color="Bot", markers=True)
+if nb_points != "Tous":
+    df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
+
+# Calcul de l'échelle X de référence (celle de "Tous" : du début de la fenêtre au Refresh)
+df_courbes["Date_dt"] = pd.to_datetime(df_courbes["Date"])
+x_min_dt = df_courbes["Date_dt"].min()
+x_max_dt = df_courbes["Date_dt"].max()
+
+if vue_choisie == "Tous (Portefeuilles)":
+    fig_comp = px.line(df_courbes, x="Date_dt", y="Valeur (CAD)", color="Bot", markers=True)
     fig_comp.add_hline(y=CAPITAL_INITIAL, line_dash="dot", line_color="rgba(255,255,255,0.35)")
     
     for trace in fig_comp.data:
@@ -271,7 +278,7 @@ if vue_choisie == "Tous (Portefeuilles)":
     fig_comp.update_layout(
         template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(17,24,39,0.6)",
         height=320, margin=dict(t=10, l=5, r=5, b=10), dragmode=False,
-        xaxis=dict(fixedrange=True, title="", showgrid=False),
+        xaxis=dict(fixedrange=True, title="", showgrid=False, range=[x_min_dt, x_max_dt]),
         yaxis=dict(fixedrange=True, title="CAD ($)", gridcolor="rgba(255,255,255,0.06)"),
         legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5, title="")
     )
@@ -282,28 +289,28 @@ else:
     df_stock = get_intraday_stock_data(vue_choisie)
     
     if not df_stock.empty:
-        # Calcul du Minimum et Maximum absolus de l'action
-        min_price = df_stock['Low'].min()
-        max_price = df_stock['High'].max()
+        df_stock["Datetime"] = pd.to_datetime(df_stock["Datetime"])
         
-        # Le min est exactement 5% plus bas que la valeur la plus basse
-        # Le max est exactement 5% plus haut que la valeur la plus haute
+        # Filtrage des chandelles strictement comprises dans l'échelle X de "Tous"
+        df_visible = df_stock[(df_stock["Datetime"] >= x_min_dt) & (df_stock["Datetime"] <= x_max_dt)]
+        if df_visible.empty:
+            df_visible = df_stock.tail(1)
+            
+        # Cherche le prix min et max de cette échelle X et applique -5% et +5%
+        min_price = float(df_visible["Low"].min())
+        max_price = float(df_visible["High"].max())
         y_min = min_price * 0.95
         y_max = max_price * 1.05
 
         fig_stock = go.Figure(data=[go.Candlestick(
-            x=df_stock['Datetime'],
-            open=df_stock['Open'],
-            high=df_stock['High'],
-            low=df_stock['Low'],
-            close=df_stock['Close'],
-            increasing_line_color='#10b981', 
-            decreasing_line_color='#ef4444'
+            x=df_visible["Datetime"],
+            open=df_visible["Open"],
+            high=df_visible["High"],
+            low=df_visible["Low"],
+            close=df_visible["Close"],
+            increasing_line_color="#10b981", 
+            decreasing_line_color="#ef4444"
         )])
-        
-        dt_all = pd.date_range(start=df_stock['Datetime'].iloc[0], end=df_stock['Datetime'].iloc[-1], freq='1h')
-        dt_obs = [d.strftime("%Y-%m-%d %H:%M:%S") for d in pd.to_datetime(df_stock['Datetime'])]
-        dt_breaks = [d for d in dt_all.strftime("%Y-%m-%d %H:%M:%S").tolist() if not d in dt_obs]
 
         fig_stock.update_layout(
             template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(17,24,39,0.6)",
@@ -313,15 +320,14 @@ else:
                 title="", 
                 showgrid=False, 
                 rangeslider=dict(visible=False),
-                tickformat="%b %d, %Y<br>%H:%M",
-                rangebreaks=[dict(values=dt_breaks)]
+                range=[x_min_dt, x_max_dt] # Même échelle X exacte que "Tous"
             ),
             yaxis=dict(
-                autorange=False, # <-- Commande cruciale pour désactiver l'ajustement auto de Plotly
+                autorange=False,
                 fixedrange=True, 
                 title="Prix", 
                 gridcolor="rgba(255,255,255,0.06)",
-                range=[y_min, y_max] 
+                range=[y_min, y_max] # Min -5% et Max +5% sur cette échelle X
             )
         )
         st.plotly_chart(fig_stock, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
