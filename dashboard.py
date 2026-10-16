@@ -304,6 +304,7 @@ if vue_choisie == "Tous (Portefeuilles)":
             fixedrange=True, 
             title="", 
             showgrid=False, 
+            range=[x_min_dt, x_max_dt],  # <--- FORCAGE DE LA PLAGE X DEPUIS LE PREMIER TRADE
             rangebreaks=coupe_marche
         ),
         yaxis=dict(fixedrange=True, title="CAD ($)", gridcolor="rgba(255,255,255,0.06)"),
