@@ -262,10 +262,9 @@ df_courbes["Date_dt"] = pd.to_datetime(df_courbes["Date"])
 x_min_dt = df_courbes["Date_dt"].min()
 x_max_dt = df_courbes["Date_dt"].max()
 
-# --- BLOC NOUVEAU : DÉFINITION UNIVERSELLE DES COUPURES (NUITS & WEEK-ENDS) ---
 coupe_marche = [
-    dict(bounds=["sat", "mon"]), # Cacher le week-end
-    dict(bounds=[16, 9.5], pattern="hour") # Cacher la nuit (de 16h00 à 09h30)
+    dict(bounds=["sat", "mon"]),
+    dict(bounds=[16, 9.5], pattern="hour")
 ]
 
 if vue_choisie == "Tous (Portefeuilles)":
@@ -286,8 +285,7 @@ if vue_choisie == "Tous (Portefeuilles)":
             fixedrange=True, 
             title="", 
             showgrid=False, 
-            range=[x_min_dt, x_max_dt],
-            # On coupe les heures fermées sur le graphique de "Tous"
+            # RETRAIT de range=[x_min_dt, x_max_dt] pour laisser Plotly auto-centrer sans créer d'espace vide
             rangebreaks=coupe_marche
         ),
         yaxis=dict(fixedrange=True, title="CAD ($)", gridcolor="rgba(255,255,255,0.06)"),
@@ -301,7 +299,12 @@ else:
     
     if not df_stock.empty:
         df_stock["Datetime"] = pd.to_datetime(df_stock["Datetime"])
-        df_visible = df_stock[(df_stock["Datetime"] >= x_min_dt) & (df_stock["Datetime"] <= x_max_dt)]
+        
+        # Marge de 1h ajoutée pour s'assurer que la bougie contenant l'achat est toujours englobée
+        x_min_candle = x_min_dt - pd.Timedelta(hours=1)
+        x_max_candle = x_max_dt + pd.Timedelta(hours=1)
+        
+        df_visible = df_stock[(df_stock["Datetime"] >= x_min_candle) & (df_stock["Datetime"] <= x_max_candle)]
         if df_visible.empty:
             df_visible = df_stock.tail(1)
             
@@ -328,9 +331,8 @@ else:
                 title="", 
                 showgrid=False, 
                 rangeslider=dict(visible=False),
-                range=[x_min_dt, x_max_dt],
                 tickformat="%b %d, %Y<br>%H:%M",
-                # On coupe les heures fermées sur le graphique de l'Action
+                # RETRAIT de range=[...] ici aussi pour un auto-centrage parfait
                 rangebreaks=coupe_marche
             ),
             yaxis=dict(
