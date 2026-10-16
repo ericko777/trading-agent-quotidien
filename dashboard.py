@@ -26,6 +26,16 @@ BOTS = {
     "macro": {"name": "Macro Rotator", "icon": "🌍", "style": "Dalio", "color": "#F59E0B", "prompt": "macro.txt"}
 }
 
+# --- FONCTION UTILITAIRE : HEURE DU QUÉBEC (UTC -4h) ---
+def to_qc_time(date_str):
+    """Convertit l'heure serveur UTC en heure locale du Québec pour l'affichage."""
+    if not date_str or date_str == "Aucune": return date_str
+    try:
+        dt = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+        return (dt - datetime.timedelta(hours=4)).strftime("%Y-%m-%d %H:%M:%S")
+    except:
+        return date_str
+
 # --- CSS SUR MESURE POUR ÉCRAN AMOLED ---
 st.markdown("""
 <style>
@@ -125,9 +135,12 @@ for bot_id in BOTS.keys():
         with open(l_file, "r", encoding="utf-8") as f:
             raw_logs[bot_id] = json.load(f)
 
-# --- 2. TÉLÉCHARGEMENT DES PRIX EN DIRECT ---
+# --- 2. TÉLÉCHARGEMENT DES PRIX EN DIRECT ET HEURE QC ---
 live_prices, live_usd_to_cad = get_live_prices(tuple(all_open_tickers)) if all_open_tickers else ({}, 1.38)
-now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+# Point Live calculé directement en heure du Québec (UTC -4h)
+now_qc = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
+now_str_qc = now_qc.strftime("%Y-%m-%d %H:%M:%S")
 
 # --- 3. CALCUL DU CLASSEMENT EN DIRECT ---
 recap_list = []
@@ -154,9 +167,11 @@ for bot_id, info in BOTS.items():
 
     l_data = raw_logs.get(bot_id, [])
     nb_requetes = len(l_data)
+    
+    # On convertit les logs serveur en heure QC
     derniere_action = l_data[-1].get("action", "HOLD") if nb_requetes > 0 else "HOLD"
     dernier_ticker = l_data[-1].get("ticker", "-") if nb_requetes > 0 else "-"
-    derniere_date = l_data[-1].get("date", "Aucune") if nb_requetes > 0 else "Aucune"
+    derniere_date = to_qc_time(l_data[-1].get("date", "Aucune")) if nb_requetes > 0 else "Aucune"
 
     gain_net = val_actuelle_live - CAPITAL_INITIAL
     roi_pct = (gain_net / CAPITAL_INITIAL) * 100.0
@@ -169,18 +184,18 @@ for bot_id, info in BOTS.items():
         "last_action": derniere_action, "last_ticker": dernier_ticker, "last_date": derniere_date
     })
 
-    # Ajout de l'historique sauvegardé (Points pleins : Exécutions réelles)
+    # Ajout de l'historique sauvegardé (converti à l'heure du Québec)
     for item in p_data.get("history_valuation", []):
         courbes_list.append({
-            "Date": item["date"],
+            "Date": to_qc_time(item["date"]),
             "Bot": f"{info['icon']} {info['name']}",
             "Valeur (CAD)": float(item["total_value_cad"]),
             "Type": "Run"
         })
     
-    # Injection du point Refresh Live (Point vide)
+    # Injection du point Refresh Live
     courbes_list.append({
-        "Date": now_str, 
+        "Date": now_str_qc, 
         "Bot": f"{info['icon']} {info['name']}",
         "Valeur (CAD)": round(val_actuelle_live, 2),
         "Type": "Live"
@@ -269,13 +284,12 @@ if courbes_list:
     fig_comp = px.line(df_courbes, x="Date", y="Valeur (CAD)", color="Bot", markers=True)
     fig_comp.add_hline(y=CAPITAL_INITIAL, line_dash="dot", line_color="rgba(255,255,255,0.35)")
     
-    # Personnalisation des marqueurs : Historique = Rond Plein, Live = Rond Vide
     for trace in fig_comp.data:
         bot_df = df_courbes[df_courbes["Bot"] == trace.name]
         types = bot_df["Type"].tolist()
         
         symbols = ['circle' if t == "Run" else 'circle-open' for t in types]
-        sizes = [6 if t == "Run" else 10 for t in types] # Le Live est un peu plus gros
+        sizes = [6 if t == "Run" else 10 for t in types]
         
         trace.update(marker=dict(
             symbol=symbols,
@@ -319,7 +333,7 @@ st.markdown(f"""
     <div class="kpi-box">
         <div class="kpi-label">💵 Cash Disponible</div>
         <div class="kpi-num">{bot_row['cash_cad']:.2f} $</div>
-        <div style="font-size:0.78rem; color:#94a3b8;">{bot_row['cash_pct']:.1f}% du portefeuille</div>
+        <div style="font-size:0.78rem; color:#94a3b8;">{bot_row['cash_pct']:.1f}% du portef.</div>
     </div>
     <div class="kpi-box">
         <div class="kpi-label">📈 Gain Brut Marché</div>
@@ -341,7 +355,10 @@ with tab_logs:
         for idx_log, entry in enumerate(reversed(logs)):
             act = entry.get("action", "HOLD")
             tkr = entry.get("ticker", "AUCUN")
-            dt = entry.get("date", "")
+            
+            # Conversion de l'heure du log en Heure QC
+            dt = to_qc_time(entry.get("date", ""))
+            
             icone = "🟢" if act == "BUY" else ("🔴" if act == "SELL" else "⏸️")
             with st.expander(f"{icone} {dt} — {act} ({tkr})", expanded=(idx_log == 0)):
                 st.markdown(f"{format_badge(f'{act} {tkr}')} &nbsp; <span style='font-size:0.78rem; color:#94a3b8;'>Modèle: <code>{entry.get('model', 'N/A')}</code></span>", unsafe_allow_html=True)
@@ -395,10 +412,14 @@ with tab_port:
 with tab_trades:
     if df_trades is not None and not df_trades.empty:
         for _, tr in df_trades.iloc[::-1].iterrows():
+            
+            # Conversion de l'heure de transaction en Heure QC
+            tr_date = to_qc_time(str(tr["Date"]))
+            
             st.markdown(f"""
             <div class="rank-card" style="display:block;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                    <div>{format_badge(f'{tr["Action"]} {tr["Ticker"]}')} <span style="font-size:0.75rem; color:#94a3b8;">{tr["Date"]}</span></div>
+                    <div>{format_badge(f'{tr["Action"]} {tr["Ticker"]}')} <span style="font-size:0.75rem; color:#94a3b8;">{tr_date}</span></div>
                     <div style="font-size:0.82rem; font-weight:700; color:#f8fafc;">Prix: {tr["Price"]:.2f}$ &nbsp;|&nbsp; Frais: -{tr["Fee_CAD"]:.2f}$</div>
                 </div>
             </div>
