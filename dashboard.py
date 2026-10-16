@@ -275,10 +275,15 @@ df_courbes = pd.DataFrame(courbes_list)
 
 df_courbes_affiche = pd.DataFrame()
 if not df_courbes.empty:
-    # On filtre les N derniers points pour l'affichage visuel
-    df_courbes_affiche = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
+    # On isole TOUJOURS la toute première ligne (le 1er trade du 15 oct à 1000$) pour chaque bot
+    df_premiers = df_courbes.groupby("Bot").head(1)
     
-    # MAIS on calcule le X min et max absolu sur TOUTES les données pour ne jamais perdre le 1er trade (ex: du 15 oct)
+    # On prend les N derniers points récents
+    df_recents = df_courbes.groupby("Bot").tail(int(nb_points))
+    
+    # On fusionne les deux pour s'assurer que le départ est toujours là, peu importe le nombre de points N
+    df_courbes_affiche = pd.concat([df_premiers, df_recents]).drop_duplicates().sort_values(["Bot", "Date_dt"]).reset_index(drop=True)
+    
     x_min_dt = df_courbes["Date_dt"].min()
     x_max_dt = df_courbes["Date_dt"].max()
 else:
@@ -308,7 +313,7 @@ if vue_choisie == "Tous (Portefeuilles)":
             fixedrange=True, 
             title="", 
             showgrid=False, 
-            range=[x_min_dt, x_max_dt],  # Plage X forcée depuis la toute première transaction historique
+            range=[x_min_dt, x_max_dt],  # Forçage strict de l'axe X englobant le 15 oct
             rangebreaks=coupe_marche
         ),
         yaxis=dict(fixedrange=True, title="CAD ($)", gridcolor="rgba(255,255,255,0.06)"),
