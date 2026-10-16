@@ -89,7 +89,6 @@ def get_live_prices(tickers_tuple):
 
 @st.cache_data(ttl=300, show_spinner=False)
 def get_intraday_stock_data(ticker):
-    """Télécharge l'historique détaillé (Heure par heure) d'une action en heure locale du Québec."""
     try:
         stock = yf.Ticker(ticker)
         df = stock.history(period="7d", interval="1h")
@@ -255,12 +254,31 @@ vue_choisie = st.selectbox("Sélectionne ce que tu veux analyser :", options_vue
 nb_points = st.radio("Points affichés :", options=[10, 20, 50, 100, "Tous"], horizontal=True, label_visibility="collapsed")
 df_courbes = pd.DataFrame(courbes_list)
 
+df_courbes["Date_dt"] = pd.to_datetime(df_courbes["Date"])
+
+# --- FILTRE MAGIQUE : COUPER LES 1000$ DE DÉPART ---
+# On cherche l'heure exacte du tout premier achat d'action pour aligner le graphique
+all_trade_dates = []
+for bot_id, df_t in raw_trades.items():
+    if df_t is not None and not df_t.empty:
+        for d in df_t["Date"]:
+            all_trade_dates.append(pd.to_datetime(to_qc_time(str(d))))
+
+if all_trade_dates:
+    premier_achat_dt = min(all_trade_dates)
+    # On retire du graphique tous les points générés AVANT le 1er trade (ex: les initialisations à 1000$)
+    # On laisse une tolérance de 1 minute pour capter la vraie valeur du portefeuille à l'instant du trade.
+    df_courbes = df_courbes[df_courbes["Date_dt"] >= (premier_achat_dt - pd.Timedelta(minutes=1))]
+
 if nb_points != "Tous":
     df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
 
-df_courbes["Date_dt"] = pd.to_datetime(df_courbes["Date"])
-x_min_dt = df_courbes["Date_dt"].min()
-x_max_dt = df_courbes["Date_dt"].max()
+if not df_courbes.empty:
+    x_min_dt = df_courbes["Date_dt"].min()
+    x_max_dt = df_courbes["Date_dt"].max()
+else:
+    x_max_dt = pd.to_datetime(now_str_qc)
+    x_min_dt = x_max_dt - pd.Timedelta(hours=1)
 
 coupe_marche = [
     dict(bounds=["sat", "mon"]),
@@ -285,7 +303,6 @@ if vue_choisie == "Tous (Portefeuilles)":
             fixedrange=True, 
             title="", 
             showgrid=False, 
-            # RETRAIT de range=[x_min_dt, x_max_dt] pour laisser Plotly auto-centrer sans créer d'espace vide
             rangebreaks=coupe_marche
         ),
         yaxis=dict(fixedrange=True, title="CAD ($)", gridcolor="rgba(255,255,255,0.06)"),
@@ -300,7 +317,7 @@ else:
     if not df_stock.empty:
         df_stock["Datetime"] = pd.to_datetime(df_stock["Datetime"])
         
-        # Marge de 1h ajoutée pour s'assurer que la bougie contenant l'achat est toujours englobée
+        # Marge de 1h ajoutée pour être sûr de capter la bougie du premier achat
         x_min_candle = x_min_dt - pd.Timedelta(hours=1)
         x_max_candle = x_max_dt + pd.Timedelta(hours=1)
         
@@ -332,7 +349,6 @@ else:
                 showgrid=False, 
                 rangeslider=dict(visible=False),
                 tickformat="%b %d, %Y<br>%H:%M",
-                # RETRAIT de range=[...] ici aussi pour un auto-centrage parfait
                 rangebreaks=coupe_marche
             ),
             yaxis=dict(
