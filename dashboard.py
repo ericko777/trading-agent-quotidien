@@ -4,6 +4,7 @@ import json
 import os
 import yfinance as yf
 import plotly.express as px
+import datetime
 
 # --- CONFIGURATION PAGE MOBILE-FIRST (GALAXY S24+) ---
 st.set_page_config(
@@ -48,49 +49,16 @@ st.markdown("""
         margin-bottom: 16px;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
-    .hero-title {
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-        color: #94a3b8;
-        margin-bottom: 4px;
-        font-weight: 600;
-    }
-    .hero-value {
-        font-size: 2.0rem;
-        font-weight: 800;
-        color: #f8fafc;
-        line-height: 1.15;
-    }
-    .hero-sub {
-        font-size: 0.88rem;
-        margin-top: 6px;
-        font-weight: 600;
-    }
-    .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-top: 12px;
-        margin-bottom: 14px;
-    }
-    .kpi-box {
-        background: #111827;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 14px;
-        padding: 12px 14px;
-    }
+    .hero-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.2px; color: #94a3b8; margin-bottom: 4px; font-weight: 600; }
+    .hero-value { font-size: 2.0rem; font-weight: 800; color: #f8fafc; line-height: 1.15; }
+    .hero-sub { font-size: 0.88rem; margin-top: 6px; font-weight: 600; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; margin-bottom: 14px; }
+    .kpi-box { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 14px; }
     .kpi-label { font-size: 0.72rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px; }
     .kpi-num { font-size: 1.18rem; font-weight: 700; color: #f3f4f6; }
     .rank-card {
-        background: #111827;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 14px;
-        padding: 12px 14px;
-        margin-bottom: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px;
+        padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
     }
     .rank-left { display: flex; align-items: center; gap: 10px; }
     .rank-medal { font-size: 1.35rem; min-width: 28px; text-align: center; }
@@ -105,10 +73,7 @@ st.markdown("""
     .badge-buy { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
     .badge-sell { background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
     .badge-hold { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
-    .equation-bar {
-        background: rgba(30, 41, 59, 0.7); border-left: 4px solid #3b82f6; border-radius: 10px;
-        padding: 10px 12px; font-size: 0.82rem; color: #e2e8f0; margin-bottom: 14px;
-    }
+    .equation-bar { background: rgba(30, 41, 59, 0.7); border-left: 4px solid #3b82f6; border-radius: 10px; padding: 10px 12px; font-size: 0.82rem; color: #e2e8f0; margin-bottom: 14px; }
     .expert-box { border-radius: 12px; padding: 11px 13px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.45; }
     .exp-op { background: rgba(59, 130, 246, 0.12); border-left: 3px solid #3b82f6; color: #dbeafe; }
     .exp-sc { background: rgba(245, 158, 11, 0.12); border-left: 3px solid #f59e0b; color: #fef3c7; }
@@ -123,17 +88,13 @@ def get_live_prices(tickers_tuple):
     usd_to_cad = 1.38
     try:
         fx = yf.Ticker("CADUSD=X").history(period="5d")
-        if not fx.empty:
-            usd_to_cad = float(1.0 / fx["Close"].iloc[-1])
-    except Exception:
-        pass
+        if not fx.empty: usd_to_cad = float(1.0 / fx["Close"].iloc[-1])
+    except Exception: pass
     for t in tickers_tuple:
         try:
             h = yf.Ticker(t).history(period="5d")
-            if not h.empty:
-                prices[t] = float(h["Close"].iloc[-1])
-        except Exception:
-            pass
+            if not h.empty: prices[t] = float(h["Close"].iloc[-1])
+        except Exception: pass
     return prices, usd_to_cad
 
 def format_badge(action_str):
@@ -157,8 +118,7 @@ for bot_id in BOTS.keys():
             all_open_tickers.add(sym)
             
     t_file = os.path.join(DATA_DIR, f"trades_{bot_id}.csv")
-    if os.path.exists(t_file):
-        raw_trades[bot_id] = pd.read_csv(t_file)
+    if os.path.exists(t_file): raw_trades[bot_id] = pd.read_csv(t_file)
         
     l_file = os.path.join(DATA_DIR, f"logs_{bot_id}.json")
     if os.path.exists(l_file):
@@ -167,26 +127,24 @@ for bot_id in BOTS.keys():
 
 # --- 2. TÉLÉCHARGEMENT DES PRIX EN DIRECT ---
 live_prices, live_usd_to_cad = get_live_prices(tuple(all_open_tickers)) if all_open_tickers else ({}, 1.38)
+now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # --- 3. CALCUL DU CLASSEMENT EN DIRECT ---
 recap_list = []
 courbes_list = []
 
 for bot_id, info in BOTS.items():
-    if bot_id not in raw_portfolios:
-        continue
+    if bot_id not in raw_portfolios: continue
         
     p_data = raw_portfolios[bot_id]
     cash_cad = float(p_data["cash_cad"])
     val_actuelle_live = cash_cad
     
-    # Évaluation dynamique des positions avec yfinance
     for ticker, pos in p_data.get("positions", {}).items():
         shares = float(pos["shares"])
         is_us = not ticker.endswith(".TO")
         if ticker in live_prices:
-            px_now = live_prices[ticker]
-            val_actuelle_live += (shares * px_now * live_usd_to_cad) if is_us else (shares * px_now)
+            val_actuelle_live += (shares * live_prices[ticker] * live_usd_to_cad) if is_us else (shares * live_prices[ticker])
         else:
             val_actuelle_live += float(pos["total_cost_cad"])
 
@@ -211,20 +169,26 @@ for bot_id, info in BOTS.items():
         "last_action": derniere_action, "last_ticker": dernier_ticker, "last_date": derniere_date
     })
 
+    # Ajout de l'historique sauvegardé (Points pleins : Exécutions réelles)
     for item in p_data.get("history_valuation", []):
         courbes_list.append({
             "Date": item["date"],
             "Bot": f"{info['icon']} {info['name']}",
-            "Valeur (CAD)": float(item["total_value_cad"])
+            "Valeur (CAD)": float(item["total_value_cad"]),
+            "Type": "Run"
         })
+    
+    # Injection du point Refresh Live (Point vide)
+    courbes_list.append({
+        "Date": now_str, 
+        "Bot": f"{info['icon']} {info['name']}",
+        "Valeur (CAD)": round(val_actuelle_live, 2),
+        "Type": "Live"
+    })
 
 if not recap_list:
     st.markdown("""
-    <div class="hero-card">
-        <div class="hero-title">⏳ Initialisation de l'Arène</div>
-        <div class="hero-value">En attente du 1er Run</div>
-        <div class="hero-sub neutral-grey">Lance 'Run workflow' dans GitHub.</div>
-    </div>
+    <div class="hero-card"><div class="hero-title">⏳ Initialisation de l'Arène</div><div class="hero-value">En attente du 1er Run</div></div>
     """, unsafe_allow_html=True)
     st.stop()
 
@@ -244,7 +208,7 @@ st.markdown(f"""
 <div class="hero-card">
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <div class="hero-title">🏆 Fonds Global ({len(df_recap)} Bots Actifs)</div>
-        <div style="font-size:0.70rem; color:#64748b;">Marché en Direct (yfinance)</div>
+        <div style="font-size:0.70rem; color:#64748b;">🟢 Live Market</div>
     </div>
     <div class="hero-value">{val_globale:,.2f} $ <span style="font-size:0.95rem; font-weight:500; color:#94a3b8;">CAD</span></div>
     <div class="hero-sub {c_glob}">{s_glob}{gain_global:,.2f} $ ({s_glob}{roi_global:.2f}%) depuis le départ</div>
@@ -286,13 +250,42 @@ for idx, row in df_recap.iterrows():
     </div>
     """, unsafe_allow_html=True)
 
+# --- 5. GRAPHIQUE AVEC SÉLECTEUR DE POINTS ET RONDS PLEINS/VIDES ---
 if courbes_list:
-    fig_comp = px.line(pd.DataFrame(courbes_list), x="Date", y="Valeur (CAD)", color="Bot", markers=True)
+    st.markdown("<h3 style='margin-bottom:0px;'>📈 Évolution des Portefeuilles</h3>", unsafe_allow_html=True)
+    
+    nb_points = st.radio(
+        "Points affichés :", 
+        options=[10, 20, 50, 100, "Tous"], 
+        horizontal=True,
+        label_visibility="collapsed"
+    )
+    
+    df_courbes = pd.DataFrame(courbes_list)
+    
+    if nb_points != "Tous":
+        df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
+
+    fig_comp = px.line(df_courbes, x="Date", y="Valeur (CAD)", color="Bot", markers=True)
     fig_comp.add_hline(y=CAPITAL_INITIAL, line_dash="dot", line_color="rgba(255,255,255,0.35)")
+    
+    # Personnalisation des marqueurs : Historique = Rond Plein, Live = Rond Vide
+    for trace in fig_comp.data:
+        bot_df = df_courbes[df_courbes["Bot"] == trace.name]
+        types = bot_df["Type"].tolist()
+        
+        symbols = ['circle' if t == "Run" else 'circle-open' for t in types]
+        sizes = [6 if t == "Run" else 10 for t in types] # Le Live est un peu plus gros
+        
+        trace.update(marker=dict(
+            symbol=symbols,
+            size=sizes,
+            line=dict(width=2, color=trace.line.color)
+        ))
+
     fig_comp.update_layout(
-        title=dict(text="📈 Course des Portefeuilles (Historique)", font=dict(size=15)),
         template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(17,24,39,0.6)",
-        height=320, margin=dict(t=40, l=5, r=5, b=10), dragmode=False,
+        height=320, margin=dict(t=10, l=5, r=5, b=10), dragmode=False,
         xaxis=dict(fixedrange=True, title="", showgrid=False),
         yaxis=dict(fixedrange=True, title="CAD ($)", gridcolor="rgba(255,255,255,0.06)"),
         legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5, title="")
@@ -301,7 +294,7 @@ if courbes_list:
 
 st.divider()
 
-# --- 5. COCKPIT D'INSPECTION ---
+# --- 6. COCKPIT D'INSPECTION ---
 st.markdown("### 🔬 Cockpit d'Inspection")
 bot_keys = list(df_recap["bot_id"])
 selected_bot_id = st.radio("Agent :", options=bot_keys, format_func=lambda x: f"{BOTS[x]['icon']} {BOTS[x]['name']}", horizontal=True, label_visibility="collapsed")
@@ -370,10 +363,8 @@ with tab_port:
     for ticker, pos in portfolio.get("positions", {}).items():
         shares, cost_cad = float(pos["shares"]), float(pos["total_cost_cad"])
         is_us = not ticker.endswith(".TO")
-        
         if ticker in live_prices:
-            px_now = live_prices[ticker]
-            val_now_cad = (shares * px_now * live_usd_to_cad) if is_us else (shares * px_now)
+            val_now_cad = (shares * live_prices[ticker] * live_usd_to_cad) if is_us else (shares * live_prices[ticker])
         else:
             val_now_cad = cost_cad
             
@@ -395,12 +386,10 @@ with tab_port:
             </div>
         </div>
         """
-        
     fig_tree = px.treemap(pd.DataFrame(donnees_rep), path=["Actif"], values="Valeur_CAD", color="Actif")
     fig_tree.update_traces(textinfo="label+percent root+value")
     fig_tree.update_layout(margin=dict(t=10, l=0, r=0, b=10), height=250, paper_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig_tree, use_container_width=True, config={"displayModeBar": False})
-    
     if portfolio.get("positions"): st.markdown(cartes_positions_html, unsafe_allow_html=True)
 
 with tab_trades:
