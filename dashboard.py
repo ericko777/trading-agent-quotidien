@@ -107,7 +107,7 @@ def format_badge(action_str):
     return f'<span class="badge badge-hold">⏸️ {action_str}</span>'
 
 # --- 1. LECTURE DES DONNÉES ET COLLECTE DES TICKERS POSSÉDÉS UNIQUEMENT ---
-all_open_tickers = set() # MODIFICATION : On part de zéro au lieu de prendre toute la Watchlist
+all_open_tickers = set()
 raw_portfolios = {}
 raw_trades = {}
 raw_logs = {}
@@ -118,8 +118,6 @@ for bot_id in BOTS.keys():
         with open(p_file, "r", encoding="utf-8") as f:
             p_data = json.load(f)
         raw_portfolios[bot_id] = p_data
-        
-        # On ajoute UNIQUEMENT les actions qui sont actuellement détenues par les bots
         for sym in p_data.get("positions", {}).keys():
             all_open_tickers.add(sym)
             
@@ -131,7 +129,6 @@ for bot_id in BOTS.keys():
         with open(l_file, "r", encoding="utf-8") as f:
             raw_logs[bot_id] = json.load(f)
 
-# On va chercher les prix en direct uniquement pour les actions détenues
 live_prices, live_usd_to_cad = get_live_prices(tuple(all_open_tickers))
 now_qc = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
 now_str_qc = now_qc.strftime("%Y-%m-%d %H:%M:%S")
@@ -281,18 +278,18 @@ if vue_choisie == "Tous (Portefeuilles)":
     st.plotly_chart(fig_comp, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
 
 else:
-    # Affichage du graphique boursier détaillé (Chandelier) pour une action spécifique
     st.caption(f"Historique intraday (1 Heure) pour **{vue_choisie}**")
     df_stock = get_intraday_stock_data(vue_choisie)
     
     if not df_stock.empty:
-        # Calcul du Minimum et Maximum pour ajuster l'axe Y
+        # Calcul du Minimum et Maximum absolus de l'action
         min_price = df_stock['Low'].min()
         max_price = df_stock['High'].max()
-        # Ajout d'une marge de 5% en haut et en bas
-        margin = (max_price - min_price) * 0.05
-        y_min = min_price - margin
-        y_max = max_price + margin
+        
+        # Le min est exactement 5% plus bas que la valeur la plus basse
+        # Le max est exactement 5% plus haut que la valeur la plus haute
+        y_min = min_price * 0.95
+        y_max = max_price * 1.05
 
         fig_stock = go.Figure(data=[go.Candlestick(
             x=df_stock['Datetime'],
@@ -304,7 +301,6 @@ else:
             decreasing_line_color='#ef4444'
         )])
         
-        # Récupération des jours où il n'y a pas de données pour éviter les trous
         dt_all = pd.date_range(start=df_stock['Datetime'].iloc[0], end=df_stock['Datetime'].iloc[-1], freq='1h')
         dt_obs = [d.strftime("%Y-%m-%d %H:%M:%S") for d in pd.to_datetime(df_stock['Datetime'])]
         dt_breaks = [d for d in dt_all.strftime("%Y-%m-%d %H:%M:%S").tolist() if not d in dt_obs]
@@ -317,15 +313,14 @@ else:
                 title="", 
                 showgrid=False, 
                 rangeslider=dict(visible=False),
-                # MÊME FORMAT QUE LES PORTEFEUILLES
                 tickformat="%b %d, %Y<br>%H:%M",
                 rangebreaks=[dict(values=dt_breaks)]
             ),
             yaxis=dict(
+                autorange=False, # <-- Commande cruciale pour désactiver l'ajustement auto de Plotly
                 fixedrange=True, 
                 title="Prix", 
                 gridcolor="rgba(255,255,255,0.06)",
-                # AJUSTEMENT DYNAMIQUE DU MIN ET MAX
                 range=[y_min, y_max] 
             )
         )
