@@ -173,22 +173,22 @@ for bot_id, info in BOTS.items():
         "last_action": derniere_action, "last_ticker": dernier_ticker, "last_date": derniere_date
     })
 
-    # --- CONSTRUCTION BASÉE STRICTEMENT SUR LES FICHIERS TRADES_<TITRE>.CSV ---
+    # --- CONSTRUCTION STRICTE SELON LES FICHIERS TRADES_<TITRE>.CSV ---
     bot_name = f"{info['icon']} {info['name']}"
     if df_t is not None and not df_t.empty and "Date" in df_t.columns:
         for idx, row in df_t.iterrows():
             t_date = to_qc_time(str(row["Date"]))
             
-            # Recherche de la valorisation correspondante dans l'historique du portfolio, sinon 1000$ par défaut
-            matched_val = CAPITAL_INITIAL
-            for h_item in p_data.get("history_valuation", []):
-                if to_qc_time(h_item["date"]) == t_date:
-                    matched_val = float(h_item["total_value_cad"])
-                    break
-            
-            # Règle absolue : Le premier trade vaut exactement 1000$
             if idx == 0:
+                # LA PREMIÈRE DATE VAUT EXACTEMENT 1000$ (L'ARGENT DE DÉPART)
                 matched_val = CAPITAL_INITIAL
+            else:
+                # LES DATES SUIVANTES PRENNENT LA VALEUR ENREGISTRÉE DANS L'HISTORIQUE OU LE CAPITAL INITIAL
+                matched_val = CAPITAL_INITIAL
+                for h_item in p_data.get("history_valuation", []):
+                    if to_qc_time(h_item["date"]) == t_date:
+                        matched_val = float(h_item["total_value_cad"])
+                        break
 
             courbes_list.append({
                 "Date": t_date,
