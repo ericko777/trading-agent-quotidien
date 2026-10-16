@@ -253,11 +253,9 @@ vue_choisie = st.selectbox("Sélectionne ce que tu veux analyser :", options_vue
 
 nb_points = st.radio("Points affichés :", options=[10, 20, 50, 100, "Tous"], horizontal=True, label_visibility="collapsed")
 df_courbes = pd.DataFrame(courbes_list)
-
 df_courbes["Date_dt"] = pd.to_datetime(df_courbes["Date"])
 
-# --- FILTRE MAGIQUE : COUPER LES 1000$ DE DÉPART ---
-# On cherche l'heure exacte du tout premier achat d'action pour aligner le graphique
+# --- NOEUD DE DÉPART 1000$ (FIXATION DU POINT ZÉRO) ---
 all_trade_dates = []
 for bot_id, df_t in raw_trades.items():
     if df_t is not None and not df_t.empty:
@@ -266,9 +264,22 @@ for bot_id, df_t in raw_trades.items():
 
 if all_trade_dates:
     premier_achat_dt = min(all_trade_dates)
-    # On retire du graphique tous les points générés AVANT le 1er trade (ex: les initialisations à 1000$)
-    # On laisse une tolérance de 1 minute pour capter la vraie valeur du portefeuille à l'instant du trade.
-    df_courbes = df_courbes[df_courbes["Date_dt"] >= (premier_achat_dt - pd.Timedelta(minutes=1))]
+    # Suppression de l'historique obsolète avant le premier trade réel
+    df_courbes = df_courbes[df_courbes["Date_dt"] > premier_achat_dt]
+    
+    # Injection du nœud de départ universel à 1000$ pour tous les bots à cet instant précis
+    lignes_init = []
+    for bot_id, info in BOTS.items():
+        if bot_id in raw_portfolios:
+            lignes_init.append({
+                "Date": premier_achat_dt.strftime("%Y-%m-%d %H:%M:%S"),
+                "Bot": f"{info['icon']} {info['name']}",
+                "Valeur (CAD)": CAPITAL_INITIAL,
+                "Type": "Run",
+                "Date_dt": premier_achat_dt
+            })
+    df_courbes = pd.concat([pd.DataFrame(lignes_init), df_courbes], ignore_index=True)
+    df_courbes.sort_values(by=["Bot", "Date_dt"], inplace=True)
 
 if nb_points != "Tous":
     df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
@@ -317,7 +328,6 @@ else:
     if not df_stock.empty:
         df_stock["Datetime"] = pd.to_datetime(df_stock["Datetime"])
         
-        # Marge de 1h ajoutée pour être sûr de capter la bougie du premier achat
         x_min_candle = x_min_dt - pd.Timedelta(hours=1)
         x_max_candle = x_max_dt + pd.Timedelta(hours=1)
         
