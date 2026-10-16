@@ -1,2 +1,3 @@
 Date,Ticker,Action,Shares,Price,FX_Rate,Fee_CAD,Cash_CAD_Left,Reason
 2026-10-15 21:34:50,VFV.TO,BUY,1.54,194.81,1.0,0.0,700.0,"Application de la règle de détection d'anomalie sur 5 jours : VFV.TO est le seul titre .TO affichant une variation négative (-0.5%), offrant un point d'entrée idéal pour un retour à la moyenne tout en respectant l'interdiction absolue des frais FX."
+2026-10-16 17:55:14,SHOP.TO,BUY,2.0856,239.74,1.0,0.0,200.0,"Le titre SHOP.TO présente une anomalie statistique intéressante avec une variation de -1.68% sur 5 jours et un repli récent exploitable. Il est coté en .TO (0$ de frais), ce qui respecte strictement notre profil de scalping quantitatif canadien, et permet de réduire notre cash inactif en dessous du seuil critique de 30%."

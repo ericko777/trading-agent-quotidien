@@ -1,2 +1,3 @@
 Date,Ticker,Action,Shares,Price,FX_Rate,Fee_CAD,Cash_CAD_Left,Reason
 2026-10-15 21:34:50,CSU.TO,BUY,0.3045,3283.76,1.0,0.0,0.0,"Dans un climat Risk-On où la majorité des titres affichent une dynamique positive et en évitant strictement les frais de change US (0% de frais sur les marchés canadiens), nous investissons la totalité des liquidités disponibles (1000.00 $ CAD) dans CSU.TO, qui surperforme le marché avec une variation de +12.77% sur 5 jours, captant ainsi les flux d'argent institutionnels les plus puissants."
+2026-10-16 17:55:14,CSU.TO,SELL,0.3045,3128.2,1.0,0.0,952.63,Vente totale de la position CSU.TO pour capter la valeur actuelle du portefeuille et pivoter vers les actifs défensifs plus performants et sécurisants selon la météo macroéconomique actuelle.

@@ -28,5 +28,35 @@
     },
     "synthese": "Le comité s'accorde sur la nécessité d'attaquer le marché avec nos liquidités en ciblant un champion canadien sans frais. Bien que CSU.TO affiche la plus forte hausse, SHOP.TO offre un meilleur équilibre de prix pour notre capital de 1000 $ tout en validant un breakout puissant de +7.83%.",
     "reasoning": "Achat agressif de SHOP.TO pour 450.00 $ CAD (soit 45% du portefeuille, respectant la limite de concentration). Le titre affiche une variation sur 5 jours de +7.83% avec un historique de prix en accélération constante (franchissement de sommets), le tout sans frais de courtage ni de change (0% sur le marché canadien)."
+  },
+  {
+    "date": "2026-10-16 17:55:14",
+    "model": "gemini-3.5-flash-lite",
+    "tickers_analyzed_count": 12,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "SELL",
+    "ticker": "SHOP.TO",
+    "amount_cad": 427.0,
+    "order_executed": true,
+    "experts": {
+      "operateur": "Nous avons 550.00 $ CAD de liquidités. SHOP.TO est actuellement en baisse à 239.74 $ (-1.68%), notre position est en léger recul. D'autres titres canadiens montrent de superbes performances comme ATD.TO (+6.9%) et DOL.TO (+6.97%). Il faut exécuter une réallocation agressive.",
+      "sceptique": "Attention ! SHOP.TO a reculé sous notre prix d'achat et la règle impitoyable est claire : si une action recule de -3% ou stagne pendant qu'une autre explose, on coupe immédiatement ! SHOP.TO est à -1.68% mais sa dynamique récente s'essouffle. Ne soyons pas complaisants avec une position molle.",
+      "visionnaire": "Regardez ATD.TO et DOL.TO ! Ils cassent leurs sommets avec +6.9% et +6.97% sur 5 jours, 0% de frais, et une dynamique explosive parfaite selon CANSLIM. Il faut liquider la traînarde SHOP.TO et placer massivement le capital sur un nouveau leader."
+    },
+    "synthese": "Le comité s'accorde sur le fait que SHOP.TO montre des signes de faiblesse et doit être cédée conformément à notre règle de gestion impitoyable. Le capital libéré ainsi que nos liquidités disponibles seront redirigés vers un leader canadien en forte accélération.",
+    "reasoning": "Application stricte de la règle de gestion impitoyable : SHOP.TO recule et ne montre pas la dynamique explosive attendue face à des champions canadiens comme DOL.TO ou ATD.TO. Nous coupons cette position pour libérer le capital."
   }
 ]

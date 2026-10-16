@@ -28,5 +28,35 @@
     },
     "synthese": "Le comité valide l'achat exclusif sur le marché canadien pour éviter les frais de change. VFV.TO est identifié comme l'unique opportunité présentant une anomalie de survente sur 5 jours parmi les titres .TO éligibles.",
     "reasoning": "Application de la règle de détection d'anomalie sur 5 jours : VFV.TO est le seul titre .TO affichant une variation négative (-0.5%), offrant un point d'entrée idéal pour un retour à la moyenne tout en respectant l'interdiction absolue des frais FX."
+  },
+  {
+    "date": "2026-10-16 17:55:14",
+    "model": "gemini-3.5-flash-lite",
+    "tickers_analyzed_count": 12,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "SHOP.TO",
+    "amount_cad": 500.0,
+    "order_executed": true,
+    "experts": {
+      "operateur": "VFV.TO est actuellement à 192.45 CAD contre un prix d'achat moyen de 194.81 CAD, soit une perte latente de -1.21%. Le cash disponible est de 700.00 CAD et nous devons respecter la règle de ne pas garder plus de 30% de cash inactif. Tous les choix se portent exclusivement sur les tickers .TO pour garantir 0$ de frais.",
+      "sceptique": "Attention ! VFV.TO est en baisse mais sa perte latente n'a pas encore atteint le stop-loss algorithmique de -2.5%. Le vendre maintenant serait prématuré. En revanche, avec 700$ de cash, nous devons identifier une véritable opportunité de rebond parmi les .TO en survente sans violer nos règles de gestion des risques.",
+      "visionnaire": "Parmi les titres .TO, SHOP.TO affiche une variation sur 5 jours de -1.68% avec une baisse nette hier menant à 239.74 CAD, ce qui représente une excellente anomalie statistique à exploiter pour un rebond à court terme."
+    },
+    "synthese": "Le comité valide le maintien de la position sur VFV.TO car le seuil de stop-loss n'est pas atteint, tout en identifiant SHOP.TO comme le meilleur candidat .TO en survente pour déployer une partie du cash inactif conformément à notre stratégie de vélocité.",
+    "reasoning": "Le titre SHOP.TO présente une anomalie statistique intéressante avec une variation de -1.68% sur 5 jours et un repli récent exploitable. Il est coté en .TO (0$ de frais), ce qui respecte strictement notre profil de scalping quantitatif canadien, et permet de réduire notre cash inactif en dessous du seuil critique de 30%."
   }
 ]

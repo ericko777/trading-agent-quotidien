@@ -28,5 +28,35 @@
     },
     "synthese": "Le comité observe un marché globalement orienté à la hausse (Risk-On avec 8 titres sur 12 positifs). L'Opérateur et le Visionnaire s'accordent pour investir la totalité des liquidités (1000.00 $ CAD) sur un champion canadien de la croissance sans frais de change. Le Sceptique rappelle de surveiller la volatilité, mais valide l'opportunité sur le titre le plus fort.",
     "reasoning": "Dans un climat Risk-On où la majorité des titres affichent une dynamique positive et en évitant strictement les frais de change US (0% de frais sur les marchés canadiens), nous investissons la totalité des liquidités disponibles (1000.00 $ CAD) dans CSU.TO, qui surperforme le marché avec une variation de +12.77% sur 5 jours, captant ainsi les flux d'argent institutionnels les plus puissants."
+  },
+  {
+    "date": "2026-10-16 17:55:14",
+    "model": "gemini-3.5-flash-lite",
+    "tickers_analyzed_count": 12,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "SELL",
+    "ticker": "CSU.TO",
+    "amount_cad": 952.54,
+    "order_executed": true,
+    "experts": {
+      "operateur": "Le portefeuille est actuellement 100% investi en CSU.TO (0,3045 parts). Les véhicules canadiens sont utilisés à 100%, évitant les frais FX de 1,5% sur les titres USD.",
+      "sceptique": "Attention ! Bien que CSU.TO affiche +4,14% sur 5 jours, le marché montre des signes de divergence avec plusieurs indices majeurs en baisse (VFV.TO, XEQT.TO, MSFT, NVDA, TSLA). Le climat est incertain et les valeurs défensives comme DOL.TO et ATD.TO explosent à près de +7%. Il ne faut pas s'endormir sur nos acquis.",
+      "visionnaire": "Le flux d'argent institutionnel se dirige massivement vers les valeurs défensives et refuges canadiennes. DOL.TO (+6,97%) et ATD.TO (+6,90%) affichent les meilleures dynamiques actuelles. C'est le moment idéal pour effectuer une rotation tactique hors de CSU.TO vers DOL.TO afin de sécuriser les gains et surfer sur la tendance défensive."
+    },
+    "synthese": "Le comité observe une transition vers un climat Risk-Off/Défensif. Bien que CSU.TO ait bien performé, la dynamique actuelle favorise les valeurs refuges canadiennes, menées par DOL.TO.",
+    "reasoning": "Vente totale de la position CSU.TO pour capter la valeur actuelle du portefeuille et pivoter vers les actifs défensifs plus performants et sécurisants selon la météo macroéconomique actuelle."
   }
 ]

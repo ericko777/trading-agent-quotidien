@@ -28,5 +28,35 @@
     },
     "synthese": "Le comité s'accorde sur l'urgence absolue de déployer notre cash dormant de 1000 CAD. Le titre canadien SHOP.TO est retenu pour sa forte dynamique (+7.83%) et son accessibilité en frais 0%, évitant les pénalités US.",
     "reasoning": "Application stricte de la règle anti-cash dormant : avec 100% de liquidités et un capital initial de 1000 CAD, nous investissons 40% du portefeuille (400 CAD) sur SHOP.TO. Ce titre canadien (.TO) présente une excellente variation sur 5 jours (+7.83%) sans aucuns frais de change (0% vs 3% sur les US), permettant d'enclencher la stratégie de croissance exponentielle et de rotation agressive."
+  },
+  {
+    "date": "2026-10-16 17:55:14",
+    "model": "gemini-3.5-flash-lite",
+    "tickers_analyzed_count": 12,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "DOL.TO",
+    "amount_cad": 979.62,
+    "order_executed": false,
+    "experts": {
+      "operateur": "Le portefeuille actuel de 1000 CAD contient 600 CAD de cash (60% du total, ce qui viole la règle du cash dormant max 25%). La position SHOP.TO a un prix actuel de 239.74 CAD contre un prix d'achat moyen de 252.53 CAD, soit une perte latente de -5.06%. Selon notre règle de stop-loss strict à -2.5%, nous devons couper SHOP.TO immédiatement pour stopper l'hémorragie.",
+      "sceptique": "SHOP.TO est en train de s'enfoncer (-5.06% de perte latente) et l'historique récent montre une baisse prononcée (de 252.53 à 239.74). De plus, détenir 600 CAD de cash dormant représente un coût d'opportunité mortel dans notre quête du million. Il faut liquider SHOP.TO sans hésiter et réinjecter la totalité du capital disponible sur le meilleur actif canadien pour éviter les frais de change US de 3%.",
+      "visionnaire": "Le marché canadien regorge d'opportunités explosives aujourd'hui. DOL.TO affiche une performance sur 5 jours de +6.97% avec une trajectoire ascendante continue (191.93 -> 205.30). C'est le cheval le plus rapide de la course avec 0% de frais de transaction grâce à la loi Wealthsimple. C'est la cible idéale pour concentrer l'intégralité de notre capital et faire tourner la machine à intérêts composés."
+    },
+    "synthese": "Le comité acte la violation du seuil de cash dormant et la perte excessive sur SHOP.TO. Il est donc impératif de vendre SHOP.TO pour couper les pertes, puis d'allouer l'intégralité du capital disponible sur le titre canadien le plus performant du jour, DOL.TO.",
+    "reasoning": "Étape 1 : Vente totale de la position SHOP.TO en raison d'un stop-loss dépassé (-5.06% de perte). Étape 2 : Réinvestissement agressif de l'intégralité du capital (environ 979.62 CAD, incluant le cash initial et le produit de la vente) dans DOL.TO, qui affiche la meilleure variation sur 5 jours (+6.97%) sur un marché canadien sans frais, respectant ainsi la stratégie de rotation rapide, l'interdiction du cash dormant et le compoundage maximal."
   }
 ]
