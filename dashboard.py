@@ -6,6 +6,7 @@ import yfinance as yf
 import plotly.express as px
 import plotly.graph_objects as go
 import datetime
+import numpy as np
 
 # --- CONFIGURATION PAGE MOBILE-FIRST (GALAXY S24+) ---
 st.set_page_config(
@@ -251,11 +252,12 @@ st.markdown("<h3 style='margin-bottom:8px;'>📊 Terminal Graphique</h3>", unsaf
 options_vue = ["Tous (Portefeuilles)"] + sorted(list(all_open_tickers))
 vue_choisie = st.selectbox("Sélectionne ce que tu veux analyser :", options_vue, label_visibility="collapsed")
 
-nb_points = st.radio("Points affichés :", options=[10, 20, 50, 100, "Tous"], horizontal=True, label_visibility="collapsed")
+# MISE À JOUR DES OPTIONS DE POINTS : [2, 4, 10, 20]
+nb_points = st.radio("Points affichés :", options=[2, 4, 10, 20], horizontal=True, label_visibility="collapsed")
 df_courbes = pd.DataFrame(courbes_list)
 df_courbes["Date_dt"] = pd.to_datetime(df_courbes["Date"])
 
-# --- CONSTRUCTION DU POINT DE DÉPART 1000$ INDESTRUCTIBLE ---
+# Détermination du premier achat de la première action
 all_trade_dates = []
 for bot_id, df_t in raw_trades.items():
     if df_t is not None and not df_t.empty:
@@ -267,35 +269,64 @@ if all_trade_dates:
 else:
     premier_achat_dt = df_courbes["Date_dt"].min() if not df_courbes.empty else pd.to_datetime(now_str_qc)
 
-# 1. On détruit les valeurs obsolètes avant la première transaction
-df_courbes = df_courbes[df_courbes["Date_dt"] > premier_achat_dt]
+fin_dt = pd.to_datetime(now_str_qc)
 
-# 2. On applique le filtre de l'utilisateur (10, 20, 50) UNIQUEMENT sur les vraies variations
-if nb_points != "Tous":
-    df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
+# --- ÉCHANTILLONNAGE INTELLIGENT DU TEMPS DE MARCHÉ (Exclusion nuits & week-ends) ---
+# On génère une plage de temps horaire et on filtre les heures ouvrables (9h30 à 16h, du lundi au vendredi)
+tous_les_heures = pd.date_range(start=premier_achat_dt, end=fin_dt, freq='1h')
+heures_marche = [
+    dt for dt in tous_les_heures 
+    if dt.weekday() < 5 and 9 <= dt.hour < 16
+]
+if len(heures_marche) < nb_points:
+    # Fallback si la plage est très courte
+    moments_cles = pd.date_range(start=premier_achat_dt, end=fin_dt, periods=nb_points)
+else:
+    # On sélectionne N points réguliers dans le temps de marché effectif
+    indices = np.linspace(0, len(heures_marche) - 1, nb_points, dtype=int)
+    moments_cles = [heures_marche[i] for i in indices]
+    # S'assurer que le premier point est pile au premier achat et le dernier à maintenant
+    moments_cles[0] = premier_achat_dt
+    moments_cles[-1] = fin_dt
 
-# 3. ON INJECTE LE 1000$ (Placé après le filtre pour qu'il ne soit jamais effacé)
-lignes_init = []
+# Filtrer et interpoler/aligner les courbes sur ces N moments clés
+courbes_filtrees = []
 for bot_id, info in BOTS.items():
-    if bot_id in raw_portfolios:
-        lignes_init.append({
-            "Date": premier_achat_dt.strftime("%Y-%m-%d %H:%M:%S"),
-            "Bot": f"{info['icon']} {info['name']}",
-            "Valeur (CAD)": CAPITAL_INITIAL,
-            "Type": "Run",
-            "Date_dt": premier_achat_dt
+    bot_name = f"{info['icon']} {info['name']}"
+    bot_df = df_courbes[df_courbes["Bot"] == bot_name].sort_values("Date_dt")
+    
+    if bot_df.empty:
+        continue
+        
+    for m_dt in moments_cles:
+        # Trouver la valeur la plus proche dans le temps pour ce bot
+        if m_dt == premier_achat_dt:
+            val = CAPITAL_INITIAL # Point de départ fixe à 1000$
+        else:
+            # Recherche de la valeur enregistrée la plus proche ou interpolation
+            sub = bot_df[bot_df["Date_dt"] <= m_dt]
+            if not sub.empty:
+                val = sub.iloc[-1]["Valeur (CAD)"]
+            else:
+                val = CAPITAL_INITIAL
+                
+        courbes_lev = "Run" if m_dt < fin_dt else "Live"
+        courbes_filtrees.append({
+            "Date": m_dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "Bot": bot_name,
+            "Valeur (CAD)": float(val),
+            "Type": courbes_lev,
+            "Date_dt": m_dt
         })
-df_init = pd.DataFrame(lignes_init)
-df_courbes = pd.concat([df_init, df_courbes], ignore_index=True)
-df_courbes.sort_values(by=["Bot", "Date_dt"], inplace=True)
-df_courbes.reset_index(drop=True, inplace=True)
+
+df_courbes = pd.DataFrame(courbes_filtrees)
 
 if not df_courbes.empty:
     x_min_dt = df_courbes["Date_dt"].min()
     x_max_dt = df_courbes["Date_dt"].max()
 else:
-    x_max_dt = pd.to_datetime(now_str_qc)
-    x_min_dt = x_max_dt - pd.Timedelta(hours=1)
+    x_max_dt = fin_dt
+    x_min_dt = premier_achat_dt
 
 coupe_marche = [
     dict(bounds=["sat", "mon"]),
