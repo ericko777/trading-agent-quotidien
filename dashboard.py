@@ -4,6 +4,7 @@ import json
 import os
 import yfinance as yf
 import plotly.express as px
+import plotly.graph_objects as go
 import datetime
 
 # --- CONFIGURATION PAGE MOBILE-FIRST (GALAXY S24+) ---
@@ -18,6 +19,12 @@ DATA_DIR = "trading_agent_data"
 PROMPTS_DIR = "prompts"
 CAPITAL_INITIAL = 1000.0
 
+WATCHLIST = [
+    "VFV.TO", "XEQT.TO", "SHOP.TO", "CSU.TO", 
+    "RY.TO", "TD.TO", "ATD.TO", "DOL.TO", 
+    "AAPL", "MSFT", "NVDA", "TSLA"
+]
+
 BOTS = {
     "momentum": {"name": "Trend Follower", "icon": "🔥", "style": "Momentum", "color": "#FF6B35", "prompt": "momentum.txt"},
     "value": {"name": "Value Compounder", "icon": "🏛️", "style": "Buffett", "color": "#3B82F6", "prompt": "value.txt"},
@@ -26,9 +33,8 @@ BOTS = {
     "macro": {"name": "Macro Rotator", "icon": "🌍", "style": "Dalio", "color": "#F59E0B", "prompt": "macro.txt"}
 }
 
-# --- FONCTION UTILITAIRE : HEURE DU QUÉBEC (UTC -4h) ---
+# --- FONCTIONS UTILITAIRES TEMPORELLES ---
 def to_qc_time(date_str):
-    """Convertit l'heure serveur UTC en heure locale du Québec pour l'affichage."""
     if not date_str or date_str == "Aucune": return date_str
     try:
         dt = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
@@ -39,26 +45,9 @@ def to_qc_time(date_str):
 # --- CSS SUR MESURE POUR ÉCRAN AMOLED ---
 st.markdown("""
 <style>
-    header[data-testid="stHeader"] {
-        background: transparent !important;
-        height: 2.5rem !important;
-    }
-    .block-container {
-        padding-top: 4.2rem !important;
-        padding-bottom: 3rem !important;
-        padding-left: 0.9rem !important;
-        padding-right: 0.9rem !important;
-        max-width: 520px !important;
-    }
-    .hero-card {
-        background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 18px;
-        padding: 18px;
-        margin-top: 0.5rem;
-        margin-bottom: 16px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    }
+    header[data-testid="stHeader"] { background: transparent !important; height: 2.5rem !important; }
+    .block-container { padding-top: 4.2rem !important; padding-bottom: 3rem !important; padding-left: 0.9rem !important; padding-right: 0.9rem !important; max-width: 520px !important; }
+    .hero-card { background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 18px; padding: 18px; margin-top: 0.5rem; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); }
     .hero-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.2px; color: #94a3b8; margin-bottom: 4px; font-weight: 600; }
     .hero-value { font-size: 2.0rem; font-weight: 800; color: #f8fafc; line-height: 1.15; }
     .hero-sub { font-size: 0.88rem; margin-top: 6px; font-weight: 600; }
@@ -66,10 +55,7 @@ st.markdown("""
     .kpi-box { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 14px; }
     .kpi-label { font-size: 0.72rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px; }
     .kpi-num { font-size: 1.18rem; font-weight: 700; color: #f3f4f6; }
-    .rank-card {
-        background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px;
-        padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
-    }
+    .rank-card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
     .rank-left { display: flex; align-items: center; gap: 10px; }
     .rank-medal { font-size: 1.35rem; min-width: 28px; text-align: center; }
     .rank-name { font-weight: 700; font-size: 0.95rem; color: #f8fafc; }
@@ -91,7 +77,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- FONCTION PRIX EN DIRECT (Cache de 5 minutes) ---
+# --- FONCTIONS DONNÉES EN DIRECT (Cache dynamique) ---
 @st.cache_data(ttl=300, show_spinner=False)
 def get_live_prices(tickers_tuple):
     prices = {}
@@ -107,13 +93,29 @@ def get_live_prices(tickers_tuple):
         except Exception: pass
     return prices, usd_to_cad
 
+@st.cache_data(ttl=300, show_spinner=False)
+def get_intraday_stock_data(ticker):
+    """Télécharge l'historique détaillé (Heure par heure) d'une action pour le graphique Candlestick."""
+    try:
+        stock = yf.Ticker(ticker)
+        # On demande les 7 derniers jours avec un intervalle de 1 heure
+        df = stock.history(period="7d", interval="1h")
+        if not df.empty:
+            # Conversion du fuseau horaire en heure du Québec (America/Toronto)
+            df.index = df.index.tz_convert('America/Toronto')
+            df.reset_index(inplace=True)
+            return df
+    except Exception:
+        pass
+    return pd.DataFrame()
+
 def format_badge(action_str):
     if "BUY" in action_str: return f'<span class="badge badge-buy">🟢 {action_str}</span>'
     elif "SELL" in action_str: return f'<span class="badge badge-sell">🔴 {action_str}</span>'
     return f'<span class="badge badge-hold">⏸️ {action_str}</span>'
 
 # --- 1. LECTURE DES DONNÉES ET COLLECTE DES TICKERS ---
-all_open_tickers = set()
+all_open_tickers = set(WATCHLIST) # On inclut la watchlist par défaut
 raw_portfolios = {}
 raw_trades = {}
 raw_logs = {}
@@ -135,14 +137,11 @@ for bot_id in BOTS.keys():
         with open(l_file, "r", encoding="utf-8") as f:
             raw_logs[bot_id] = json.load(f)
 
-# --- 2. TÉLÉCHARGEMENT DES PRIX EN DIRECT ET HEURE QC ---
-live_prices, live_usd_to_cad = get_live_prices(tuple(all_open_tickers)) if all_open_tickers else ({}, 1.38)
-
-# Point Live calculé directement en heure du Québec (UTC -4h)
+live_prices, live_usd_to_cad = get_live_prices(tuple(all_open_tickers))
 now_qc = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
 now_str_qc = now_qc.strftime("%Y-%m-%d %H:%M:%S")
 
-# --- 3. CALCUL DU CLASSEMENT EN DIRECT ---
+# --- 2. CALCUL DU CLASSEMENT EN DIRECT ---
 recap_list = []
 courbes_list = []
 
@@ -167,8 +166,6 @@ for bot_id, info in BOTS.items():
 
     l_data = raw_logs.get(bot_id, [])
     nb_requetes = len(l_data)
-    
-    # On convertit les logs serveur en heure QC
     derniere_action = l_data[-1].get("action", "HOLD") if nb_requetes > 0 else "HOLD"
     dernier_ticker = l_data[-1].get("ticker", "-") if nb_requetes > 0 else "-"
     derniere_date = to_qc_time(l_data[-1].get("date", "Aucune")) if nb_requetes > 0 else "Aucune"
@@ -184,7 +181,7 @@ for bot_id, info in BOTS.items():
         "last_action": derniere_action, "last_ticker": dernier_ticker, "last_date": derniere_date
     })
 
-    # Ajout de l'historique sauvegardé (converti à l'heure du Québec)
+    # Historique sauvegardé (Heure QC) - Ronds pleins
     for item in p_data.get("history_valuation", []):
         courbes_list.append({
             "Date": to_qc_time(item["date"]),
@@ -193,7 +190,7 @@ for bot_id, info in BOTS.items():
             "Type": "Run"
         })
     
-    # Injection du point Refresh Live
+    # Point Refresh Live - Rond vide
     courbes_list.append({
         "Date": now_str_qc, 
         "Bot": f"{info['icon']} {info['name']}",
@@ -202,14 +199,12 @@ for bot_id, info in BOTS.items():
     })
 
 if not recap_list:
-    st.markdown("""
-    <div class="hero-card"><div class="hero-title">⏳ Initialisation de l'Arène</div><div class="hero-value">En attente du 1er Run</div></div>
-    """, unsafe_allow_html=True)
+    st.markdown("""<div class="hero-card"><div class="hero-title">⏳ Initialisation de l'Arène</div><div class="hero-value">En attente du 1er Run</div></div>""", unsafe_allow_html=True)
     st.stop()
 
 df_recap = pd.DataFrame(recap_list).sort_values(by="val", ascending=False).reset_index(drop=True)
 
-# --- 4. AFFICHAGE BANDEAU ET PODIUM ---
+# --- 3. AFFICHAGE BANDEAU ET PODIUM ---
 capital_global = CAPITAL_INITIAL * len(df_recap)
 val_globale = df_recap["val"].sum()
 gain_global = val_globale - capital_global
@@ -228,14 +223,8 @@ st.markdown(f"""
     <div class="hero-value">{val_globale:,.2f} $ <span style="font-size:0.95rem; font-weight:500; color:#94a3b8;">CAD</span></div>
     <div class="hero-sub {c_glob}">{s_glob}{gain_global:,.2f} $ ({s_glob}{roi_global:.2f}%) depuis le départ</div>
     <div class="kpi-grid" style="margin-bottom:0px; margin-top:14px;">
-        <div class="kpi-box" style="padding:9px 12px;">
-            <div class="kpi-label">👑 Leader Actuel</div>
-            <div style="font-size:0.95rem; font-weight:700; color:#f8fafc;">{leader['icon']} {leader['name']}</div>
-        </div>
-        <div class="kpi-box" style="padding:9px 12px;">
-            <div class="kpi-label">💸 Frais WS Totaux</div>
-            <div style="font-size:0.95rem; font-weight:700; color:#f87171;">-{frais_globaux:.2f} $</div>
-        </div>
+        <div class="kpi-box" style="padding:9px 12px;"><div class="kpi-label">👑 Leader Actuel</div><div style="font-size:0.95rem; font-weight:700; color:#f8fafc;">{leader['icon']} {leader['name']}</div></div>
+        <div class="kpi-box" style="padding:9px 12px;"><div class="kpi-label">💸 Frais WS Totaux</div><div style="font-size:0.95rem; font-weight:700; color:#f87171;">-{frais_globaux:.2f} $</div></div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -265,17 +254,17 @@ for idx, row in df_recap.iterrows():
     </div>
     """, unsafe_allow_html=True)
 
-# --- 5. GRAPHIQUE AVEC SÉLECTEUR DE POINTS ET RONDS PLEINS/VIDES ---
-if courbes_list:
-    st.markdown("<h3 style='margin-bottom:0px;'>📈 Évolution des Portefeuilles</h3>", unsafe_allow_html=True)
-    
-    nb_points = st.radio(
-        "Points affichés :", 
-        options=[10, 20, 50, 100, "Tous"], 
-        horizontal=True,
-        label_visibility="collapsed"
-    )
-    
+# --- 4. TERMINAL DE MARCHÉ : GRAPHIQUE DYNAMIQUE (PORTEFEUILLES OU ACTIONS) ---
+st.divider()
+st.markdown("<h3 style='margin-bottom:8px;'>📊 Terminal Graphique</h3>", unsafe_allow_html=True)
+
+# Sélecteur d'affichage : Tous les Portefeuilles OU une action spécifique
+options_vue = ["Tous (Portefeuilles)"] + sorted(list(all_open_tickers))
+vue_choisie = st.selectbox("Sélectionne ce que tu veux analyser :", options_vue, label_visibility="collapsed")
+
+if vue_choisie == "Tous (Portefeuilles)":
+    # Affichage classique des 5 courbes de portefeuilles
+    nb_points = st.radio("Points affichés :", options=[10, 20, 50, 100, "Tous"], horizontal=True, label_visibility="collapsed")
     df_courbes = pd.DataFrame(courbes_list)
     
     if nb_points != "Tous":
@@ -287,15 +276,9 @@ if courbes_list:
     for trace in fig_comp.data:
         bot_df = df_courbes[df_courbes["Bot"] == trace.name]
         types = bot_df["Type"].tolist()
-        
         symbols = ['circle' if t == "Run" else 'circle-open' for t in types]
         sizes = [6 if t == "Run" else 10 for t in types]
-        
-        trace.update(marker=dict(
-            symbol=symbols,
-            size=sizes,
-            line=dict(width=2, color=trace.line.color)
-        ))
+        trace.update(marker=dict(symbol=symbols, size=sizes, line=dict(width=2, color=trace.line.color)))
 
     fig_comp.update_layout(
         template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(17,24,39,0.6)",
@@ -306,9 +289,34 @@ if courbes_list:
     )
     st.plotly_chart(fig_comp, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
 
+else:
+    # Affichage du graphique boursier détaillé (Chandelier) pour une action spécifique
+    st.caption(f"Historique intraday (1 Heure) pour **{vue_choisie}**")
+    df_stock = get_intraday_stock_data(vue_choisie)
+    
+    if not df_stock.empty:
+        fig_stock = go.Figure(data=[go.Candlestick(
+            x=df_stock['Datetime'],
+            open=df_stock['Open'],
+            high=df_stock['High'],
+            low=df_stock['Low'],
+            close=df_stock['Close'],
+            increasing_line_color='#10b981', 
+            decreasing_line_color='#ef4444'
+        )])
+        fig_stock.update_layout(
+            template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(17,24,39,0.6)",
+            height=320, margin=dict(t=10, l=5, r=5, b=10), dragmode=False,
+            xaxis=dict(fixedrange=True, title="", showgrid=False, rangeslider=dict(visible=False)),
+            yaxis=dict(fixedrange=True, title="Prix", gridcolor="rgba(255,255,255,0.06)")
+        )
+        st.plotly_chart(fig_stock, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
+    else:
+        st.warning(f"Impossible de récupérer l'historique horaire pour {vue_choisie}.")
+
 st.divider()
 
-# --- 6. COCKPIT D'INSPECTION ---
+# --- 5. COCKPIT D'INSPECTION ---
 st.markdown("### 🔬 Cockpit d'Inspection")
 bot_keys = list(df_recap["bot_id"])
 selected_bot_id = st.radio("Agent :", options=bot_keys, format_func=lambda x: f"{BOTS[x]['icon']} {BOTS[x]['name']}", horizontal=True, label_visibility="collapsed")
@@ -325,26 +333,10 @@ c_net = "pos-green" if bot_row["gain_net"] >= 0 else "neg-red"
 
 st.markdown(f"""
 <div class="kpi-grid">
-    <div class="kpi-box">
-        <div class="kpi-label">💎 Valeur Nette</div>
-        <div class="kpi-num">{bot_row['val']:.2f} $</div>
-        <div style="font-size:0.78rem;" class="{c_net}">{sign_net}{bot_row['gain_net']:.2f} $</div>
-    </div>
-    <div class="kpi-box">
-        <div class="kpi-label">💵 Cash Disponible</div>
-        <div class="kpi-num">{bot_row['cash_cad']:.2f} $</div>
-        <div style="font-size:0.78rem; color:#94a3b8;">{bot_row['cash_pct']:.1f}% du portef.</div>
-    </div>
-    <div class="kpi-box">
-        <div class="kpi-label">📈 Gain Brut Marché</div>
-        <div class="kpi-num">{sign_brut}{gain_brut:.2f} $</div>
-        <div style="font-size:0.78rem; color:#94a3b8;">Avant frais</div>
-    </div>
-    <div class="kpi-box">
-        <div class="kpi-label">🏦 Frais Wealthsimple</div>
-        <div class="kpi-num neg-red">-{bot_row['frais']:.2f} $</div>
-        <div style="font-size:0.78rem; color:#94a3b8;">{bot_row['trades']} ordres</div>
-    </div>
+    <div class="kpi-box"><div class="kpi-label">💎 Valeur Nette</div><div class="kpi-num">{bot_row['val']:.2f} $</div><div style="font-size:0.78rem;" class="{c_net}">{sign_net}{bot_row['gain_net']:.2f} $</div></div>
+    <div class="kpi-box"><div class="kpi-label">💵 Cash Disponible</div><div class="kpi-num">{bot_row['cash_cad']:.2f} $</div><div style="font-size:0.78rem; color:#94a3b8;">{bot_row['cash_pct']:.1f}% du portef.</div></div>
+    <div class="kpi-box"><div class="kpi-label">📈 Gain Brut Marché</div><div class="kpi-num">{sign_brut}{gain_brut:.2f} $</div><div style="font-size:0.78rem; color:#94a3b8;">Avant frais</div></div>
+    <div class="kpi-box"><div class="kpi-label">🏦 Frais Wealthsimple</div><div class="kpi-num neg-red">-{bot_row['frais']:.2f} $</div><div style="font-size:0.78rem; color:#94a3b8;">{bot_row['trades']} ordres</div></div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -355,10 +347,7 @@ with tab_logs:
         for idx_log, entry in enumerate(reversed(logs)):
             act = entry.get("action", "HOLD")
             tkr = entry.get("ticker", "AUCUN")
-            
-            # Conversion de l'heure du log en Heure QC
             dt = to_qc_time(entry.get("date", ""))
-            
             icone = "🟢" if act == "BUY" else ("🔴" if act == "SELL" else "⏸️")
             with st.expander(f"{icone} {dt} — {act} ({tkr})", expanded=(idx_log == 0)):
                 st.markdown(f"{format_badge(f'{act} {tkr}')} &nbsp; <span style='font-size:0.78rem; color:#94a3b8;'>Modèle: <code>{entry.get('model', 'N/A')}</code></span>", unsafe_allow_html=True)
@@ -380,10 +369,8 @@ with tab_port:
     for ticker, pos in portfolio.get("positions", {}).items():
         shares, cost_cad = float(pos["shares"]), float(pos["total_cost_cad"])
         is_us = not ticker.endswith(".TO")
-        if ticker in live_prices:
-            val_now_cad = (shares * live_prices[ticker] * live_usd_to_cad) if is_us else (shares * live_prices[ticker])
-        else:
-            val_now_cad = cost_cad
+        if ticker in live_prices: val_now_cad = (shares * live_prices[ticker] * live_usd_to_cad) if is_us else (shares * live_prices[ticker])
+        else: val_now_cad = cost_cad
             
         pnl_cad = val_now_cad - cost_cad
         pnl_pct = (pnl_cad / cost_cad) * 100.0 if cost_cad > 0 else 0.0
@@ -393,14 +380,8 @@ with tab_port:
 
         cartes_positions_html += f"""
         <div class="rank-card">
-            <div>
-                <div class="rank-name">{ticker}</div>
-                <div class="rank-meta">{shares:.4f} actions • Coût: {cost_cad:.2f} $</div>
-            </div>
-            <div class="rank-right">
-                <div class="rank-val">{val_now_cad:.2f} $</div>
-                <div style="font-size:0.80rem;" class="{c_pos}">{s_pos}{pnl_cad:.2f} $ ({s_pos}{pnl_pct:.2f}%)</div>
-            </div>
+            <div><div class="rank-name">{ticker}</div><div class="rank-meta">{shares:.4f} actions • Coût: {cost_cad:.2f} $</div></div>
+            <div class="rank-right"><div class="rank-val">{val_now_cad:.2f} $</div><div style="font-size:0.80rem;" class="{c_pos}">{s_pos}{pnl_cad:.2f} $ ({s_pos}{pnl_pct:.2f}%)</div></div>
         </div>
         """
     fig_tree = px.treemap(pd.DataFrame(donnees_rep), path=["Actif"], values="Valeur_CAD", color="Actif")
@@ -412,10 +393,7 @@ with tab_port:
 with tab_trades:
     if df_trades is not None and not df_trades.empty:
         for _, tr in df_trades.iloc[::-1].iterrows():
-            
-            # Conversion de l'heure de transaction en Heure QC
             tr_date = to_qc_time(str(tr["Date"]))
-            
             st.markdown(f"""
             <div class="rank-card" style="display:block;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
