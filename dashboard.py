@@ -94,7 +94,6 @@ def get_intraday_stock_data(ticker):
         stock = yf.Ticker(ticker)
         df = stock.history(period="7d", interval="1h")
         if not df.empty:
-            # Conversion en heure du Québec et suppression du fuseau pour s'aligner exactement avec l'axe X de "Tous"
             df.index = df.index.tz_convert('America/Toronto').tz_localize(None)
             df.reset_index(inplace=True)
             df.rename(columns={df.columns[0]: "Datetime"}, inplace=True)
@@ -259,10 +258,15 @@ df_courbes = pd.DataFrame(courbes_list)
 if nb_points != "Tous":
     df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
 
-# Calcul de l'échelle X de référence (celle de "Tous" : du début de la fenêtre au Refresh)
 df_courbes["Date_dt"] = pd.to_datetime(df_courbes["Date"])
 x_min_dt = df_courbes["Date_dt"].min()
 x_max_dt = df_courbes["Date_dt"].max()
+
+# --- BLOC NOUVEAU : DÉFINITION UNIVERSELLE DES COUPURES (NUITS & WEEK-ENDS) ---
+coupe_marche = [
+    dict(bounds=["sat", "mon"]), # Cacher le week-end
+    dict(bounds=[16, 9.5], pattern="hour") # Cacher la nuit (de 16h00 à 09h30)
+]
 
 if vue_choisie == "Tous (Portefeuilles)":
     fig_comp = px.line(df_courbes, x="Date_dt", y="Valeur (CAD)", color="Bot", markers=True)
@@ -278,7 +282,14 @@ if vue_choisie == "Tous (Portefeuilles)":
     fig_comp.update_layout(
         template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(17,24,39,0.6)",
         height=320, margin=dict(t=10, l=5, r=5, b=10), dragmode=False,
-        xaxis=dict(fixedrange=True, title="", showgrid=False, range=[x_min_dt, x_max_dt]),
+        xaxis=dict(
+            fixedrange=True, 
+            title="", 
+            showgrid=False, 
+            range=[x_min_dt, x_max_dt],
+            # On coupe les heures fermées sur le graphique de "Tous"
+            rangebreaks=coupe_marche
+        ),
         yaxis=dict(fixedrange=True, title="CAD ($)", gridcolor="rgba(255,255,255,0.06)"),
         legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5, title="")
     )
@@ -290,13 +301,10 @@ else:
     
     if not df_stock.empty:
         df_stock["Datetime"] = pd.to_datetime(df_stock["Datetime"])
-        
-        # Filtrage des chandelles strictement comprises dans l'échelle X de "Tous"
         df_visible = df_stock[(df_stock["Datetime"] >= x_min_dt) & (df_stock["Datetime"] <= x_max_dt)]
         if df_visible.empty:
             df_visible = df_stock.tail(1)
             
-        # Cherche le prix min et max de cette échelle X et applique -5% et +5%
         min_price = float(df_visible["Low"].min())
         max_price = float(df_visible["High"].max())
         y_min = min_price * 0.95
@@ -320,14 +328,17 @@ else:
                 title="", 
                 showgrid=False, 
                 rangeslider=dict(visible=False),
-                range=[x_min_dt, x_max_dt] # Même échelle X exacte que "Tous"
+                range=[x_min_dt, x_max_dt],
+                tickformat="%b %d, %Y<br>%H:%M",
+                # On coupe les heures fermées sur le graphique de l'Action
+                rangebreaks=coupe_marche
             ),
             yaxis=dict(
                 autorange=False,
                 fixedrange=True, 
                 title="Prix", 
                 gridcolor="rgba(255,255,255,0.06)",
-                range=[y_min, y_max] # Min -5% et Max +5% sur cette échelle X
+                range=[y_min, y_max]
             )
         )
         st.plotly_chart(fig_stock, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
