@@ -29,20 +29,28 @@ BOTS = {
 # --- CSS SUR MESURE POUR ÉCRAN AMOLED GALAXY S24+ (19.5:9) ---
 st.markdown("""
 <style>
-    /* Réduction des marges perdues sur mobile */
+    /* Dégagement de la barre supérieure Streamlit */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+        height: 2.5rem !important;
+    }
+
+    /* Marge supérieure aérée pour mobile S24+ */
     .block-container {
-        padding-top: 1.2rem !important;
+        padding-top: 4.2rem !important; /* Dégage complètement le titre sous la barre */
         padding-bottom: 3rem !important;
-        padding-left: 0.8rem !important;
-        padding-right: 0.8rem !important;
+        padding-left: 0.9rem !important;
+        padding-right: 0.9rem !important;
         max-width: 520px !important;
     }
-    /* Carte En-tête Globale (Fonds des 5 Bots) */
+
+    /* Carte En-tête Globale */
     .hero-card {
         background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 18px;
         padding: 18px;
+        margin-top: 0.5rem;
         margin-bottom: 16px;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
