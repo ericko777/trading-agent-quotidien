@@ -293,10 +293,26 @@ else:
             close=df_stock['Close'],
             increasing_line_color='#10b981', decreasing_line_color='#ef4444'
         )])
+        
+        # Récupération des jours où il n'y a pas de données (les nuits et les week-ends)
+        # pour éviter que Plotly ne trace des espaces vides.
+        dt_all = pd.date_range(start=df_stock['Datetime'].iloc[0], end=df_stock['Datetime'].iloc[-1], freq='1h')
+        dt_obs = [d.strftime("%Y-%m-%d %H:%M:%S") for d in pd.to_datetime(df_stock['Datetime'])]
+        dt_breaks = [d for d in dt_all.strftime("%Y-%m-%d %H:%M:%S").tolist() if not d in dt_obs]
+
         fig_stock.update_layout(
             template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(17,24,39,0.6)",
             height=320, margin=dict(t=10, l=5, r=5, b=10), dragmode=False,
-            xaxis=dict(fixedrange=True, title="", showgrid=False, rangeslider=dict(visible=False)),
+            xaxis=dict(
+                fixedrange=True, 
+                title="", 
+                showgrid=False, 
+                rangeslider=dict(visible=False),
+                # Formatage de l'axe X pour qu'il ressemble au graphique des portefeuilles
+                tickformat="%b %d, %Y<br>%H:%M",
+                # On masque les "trous" où la bourse est fermée (nuits, week-ends)
+                rangebreaks=[dict(values=dt_breaks)]
+            ),
             yaxis=dict(fixedrange=True, title="Prix", gridcolor="rgba(255,255,255,0.06)")
         )
         st.plotly_chart(fig_stock, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
