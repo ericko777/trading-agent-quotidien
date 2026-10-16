@@ -19,12 +19,6 @@ DATA_DIR = "trading_agent_data"
 PROMPTS_DIR = "prompts"
 CAPITAL_INITIAL = 1000.0
 
-WATCHLIST = [
-    "VFV.TO", "XEQT.TO", "SHOP.TO", "CSU.TO", 
-    "RY.TO", "TD.TO", "ATD.TO", "DOL.TO", 
-    "AAPL", "MSFT", "NVDA", "TSLA"
-]
-
 BOTS = {
     "momentum": {"name": "Trend Follower", "icon": "🔥", "style": "Momentum", "color": "#FF6B35", "prompt": "momentum.txt"},
     "value": {"name": "Value Compounder", "icon": "🏛️", "style": "Buffett", "color": "#3B82F6", "prompt": "value.txt"},
@@ -98,10 +92,8 @@ def get_intraday_stock_data(ticker):
     """Télécharge l'historique détaillé (Heure par heure) d'une action pour le graphique Candlestick."""
     try:
         stock = yf.Ticker(ticker)
-        # On demande les 7 derniers jours avec un intervalle de 1 heure
         df = stock.history(period="7d", interval="1h")
         if not df.empty:
-            # Conversion du fuseau horaire en heure du Québec (America/Toronto)
             df.index = df.index.tz_convert('America/Toronto')
             df.reset_index(inplace=True)
             return df
@@ -114,8 +106,8 @@ def format_badge(action_str):
     elif "SELL" in action_str: return f'<span class="badge badge-sell">🔴 {action_str}</span>'
     return f'<span class="badge badge-hold">⏸️ {action_str}</span>'
 
-# --- 1. LECTURE DES DONNÉES ET COLLECTE DES TICKERS ---
-all_open_tickers = set(WATCHLIST) # On inclut la watchlist par défaut
+# --- 1. LECTURE DES DONNÉES ET COLLECTE DES TICKERS POSSÉDÉS UNIQUEMENT ---
+all_open_tickers = set() # MODIFICATION : On part de zéro au lieu de prendre toute la Watchlist
 raw_portfolios = {}
 raw_trades = {}
 raw_logs = {}
@@ -126,6 +118,8 @@ for bot_id in BOTS.keys():
         with open(p_file, "r", encoding="utf-8") as f:
             p_data = json.load(f)
         raw_portfolios[bot_id] = p_data
+        
+        # On ajoute UNIQUEMENT les actions qui sont actuellement détenues par les bots
         for sym in p_data.get("positions", {}).keys():
             all_open_tickers.add(sym)
             
@@ -137,6 +131,7 @@ for bot_id in BOTS.keys():
         with open(l_file, "r", encoding="utf-8") as f:
             raw_logs[bot_id] = json.load(f)
 
+# On va chercher les prix en direct uniquement pour les actions détenues
 live_prices, live_usd_to_cad = get_live_prices(tuple(all_open_tickers))
 now_qc = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
 now_str_qc = now_qc.strftime("%Y-%m-%d %H:%M:%S")
@@ -181,7 +176,6 @@ for bot_id, info in BOTS.items():
         "last_action": derniere_action, "last_ticker": dernier_ticker, "last_date": derniere_date
     })
 
-    # Historique sauvegardé (Heure QC) - Ronds pleins
     for item in p_data.get("history_valuation", []):
         courbes_list.append({
             "Date": to_qc_time(item["date"]),
@@ -190,7 +184,6 @@ for bot_id, info in BOTS.items():
             "Type": "Run"
         })
     
-    # Point Refresh Live - Rond vide
     courbes_list.append({
         "Date": now_str_qc, 
         "Bot": f"{info['icon']} {info['name']}",
@@ -254,16 +247,14 @@ for idx, row in df_recap.iterrows():
     </div>
     """, unsafe_allow_html=True)
 
-# --- 4. TERMINAL DE MARCHÉ : GRAPHIQUE DYNAMIQUE (PORTEFEUILLES OU ACTIONS) ---
+# --- 4. TERMINAL DE MARCHÉ : GRAPHIQUE DYNAMIQUE ---
 st.divider()
 st.markdown("<h3 style='margin-bottom:8px;'>📊 Terminal Graphique</h3>", unsafe_allow_html=True)
 
-# Sélecteur d'affichage : Tous les Portefeuilles OU une action spécifique
 options_vue = ["Tous (Portefeuilles)"] + sorted(list(all_open_tickers))
 vue_choisie = st.selectbox("Sélectionne ce que tu veux analyser :", options_vue, label_visibility="collapsed")
 
 if vue_choisie == "Tous (Portefeuilles)":
-    # Affichage classique des 5 courbes de portefeuilles
     nb_points = st.radio("Points affichés :", options=[10, 20, 50, 100, "Tous"], horizontal=True, label_visibility="collapsed")
     df_courbes = pd.DataFrame(courbes_list)
     
@@ -290,7 +281,6 @@ if vue_choisie == "Tous (Portefeuilles)":
     st.plotly_chart(fig_comp, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
 
 else:
-    # Affichage du graphique boursier détaillé (Chandelier) pour une action spécifique
     st.caption(f"Historique intraday (1 Heure) pour **{vue_choisie}**")
     df_stock = get_intraday_stock_data(vue_choisie)
     
@@ -301,8 +291,7 @@ else:
             high=df_stock['High'],
             low=df_stock['Low'],
             close=df_stock['Close'],
-            increasing_line_color='#10b981', 
-            decreasing_line_color='#ef4444'
+            increasing_line_color='#10b981', decreasing_line_color='#ef4444'
         )])
         fig_stock.update_layout(
             template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(17,24,39,0.6)",
