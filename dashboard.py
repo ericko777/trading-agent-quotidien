@@ -281,21 +281,30 @@ if vue_choisie == "Tous (Portefeuilles)":
     st.plotly_chart(fig_comp, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
 
 else:
+    # Affichage du graphique boursier détaillé (Chandelier) pour une action spécifique
     st.caption(f"Historique intraday (1 Heure) pour **{vue_choisie}**")
     df_stock = get_intraday_stock_data(vue_choisie)
     
     if not df_stock.empty:
+        # Calcul du Minimum et Maximum pour ajuster l'axe Y
+        min_price = df_stock['Low'].min()
+        max_price = df_stock['High'].max()
+        # Ajout d'une marge de 5% en haut et en bas
+        margin = (max_price - min_price) * 0.05
+        y_min = min_price - margin
+        y_max = max_price + margin
+
         fig_stock = go.Figure(data=[go.Candlestick(
             x=df_stock['Datetime'],
             open=df_stock['Open'],
             high=df_stock['High'],
             low=df_stock['Low'],
             close=df_stock['Close'],
-            increasing_line_color='#10b981', decreasing_line_color='#ef4444'
+            increasing_line_color='#10b981', 
+            decreasing_line_color='#ef4444'
         )])
         
-        # Récupération des jours où il n'y a pas de données (les nuits et les week-ends)
-        # pour éviter que Plotly ne trace des espaces vides.
+        # Récupération des jours où il n'y a pas de données pour éviter les trous
         dt_all = pd.date_range(start=df_stock['Datetime'].iloc[0], end=df_stock['Datetime'].iloc[-1], freq='1h')
         dt_obs = [d.strftime("%Y-%m-%d %H:%M:%S") for d in pd.to_datetime(df_stock['Datetime'])]
         dt_breaks = [d for d in dt_all.strftime("%Y-%m-%d %H:%M:%S").tolist() if not d in dt_obs]
@@ -308,12 +317,17 @@ else:
                 title="", 
                 showgrid=False, 
                 rangeslider=dict(visible=False),
-                # Formatage de l'axe X pour qu'il ressemble au graphique des portefeuilles
+                # MÊME FORMAT QUE LES PORTEFEUILLES
                 tickformat="%b %d, %Y<br>%H:%M",
-                # On masque les "trous" où la bourse est fermée (nuits, week-ends)
                 rangebreaks=[dict(values=dt_breaks)]
             ),
-            yaxis=dict(fixedrange=True, title="Prix", gridcolor="rgba(255,255,255,0.06)")
+            yaxis=dict(
+                fixedrange=True, 
+                title="Prix", 
+                gridcolor="rgba(255,255,255,0.06)",
+                # AJUSTEMENT DYNAMIQUE DU MIN ET MAX
+                range=[y_min, y_max] 
+            )
         )
         st.plotly_chart(fig_stock, use_container_width=True, config={"displayModeBar": False, "scrollZoom": False})
     else:
