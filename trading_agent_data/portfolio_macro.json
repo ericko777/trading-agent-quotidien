@@ -1,6 +1,12 @@
 {
-  "cash_cad": 952.6274581177895,
-  "positions": {},
+  "cash_cad": 2.6274581177895016,
+  "positions": {
+    "DOL.TO": {
+      "shares": 4.630983732214722,
+      "total_cost_cad": 950.0,
+      "avg_price_cad": 205.13999938964844
+    }
+  },
   "history_valuation": [
     {
       "date": "2026-10-15 21:34:50",
@@ -8,6 +14,10 @@
     },
     {
       "date": "2026-10-16 17:55:14",
+      "total_value_cad": 952.63
+    },
+    {
+      "date": "2026-10-16 18:43:13",
       "total_value_cad": 952.63
     }
   ]

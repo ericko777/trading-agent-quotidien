@@ -58,5 +58,35 @@
     },
     "synthese": "Le comité acte la violation du seuil de cash dormant et la perte excessive sur SHOP.TO. Il est donc impératif de vendre SHOP.TO pour couper les pertes, puis d'allouer l'intégralité du capital disponible sur le titre canadien le plus performant du jour, DOL.TO.",
     "reasoning": "Étape 1 : Vente totale de la position SHOP.TO en raison d'un stop-loss dépassé (-5.06% de perte). Étape 2 : Réinvestissement agressif de l'intégralité du capital (environ 979.62 CAD, incluant le cash initial et le produit de la vente) dans DOL.TO, qui affiche la meilleure variation sur 5 jours (+6.97%) sur un marché canadien sans frais, respectant ainsi la stratégie de rotation rapide, l'interdiction du cash dormant et le compoundage maximal."
+  },
+  {
+    "date": "2026-10-16 18:43:13",
+    "model": "gemini-3.5-flash-lite",
+    "tickers_analyzed_count": 12,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "DOL.TO",
+    "amount_cad": 980.0,
+    "order_executed": false,
+    "experts": {
+      "operateur": "La position actuelle sur SHOP.TO subit une perte latente de -4.88% (prix actuel 240.21 CAD vs prix d'achat 252.53 CAD). Nos liquidités sont à 600 CAD, soit 60% du portefeuille total de 980.37 CAD, ce qui viole la règle stricte interdisant d'avoir plus de 25% de cash dormant. Il faut immédiatement couper la position perdante SHOP.TO et réallouer massivement le capital.",
+      "sceptique": "Le Sceptique rappelle que SHOP.TO a violé notre stop-loss strict de -2.5% et que sa variation sur 5 jours est négative (-1.48%). Maintenir cette position serait une erreur monumentale dictée par l'espoir. De plus, détenir 60% de cash est un coût d'opportunité inacceptable selon nos règles. Il faut vendre SHOP.TO sans hésiter.",
+      "visionnaire": "Le cheval le plus rapide du jour est DOL.TO avec une explosion de +6.88% sur 5 jours (et ATD.TO juste derrière à +6.86%). Ce sont des titres canadiens (.TO) donc 0% de frais de change. C'est l'actif idéal pour faire tourner notre capital agressivement et enclencher la croissance exponentielle."
+    },
+    "synthese": "Le comité s'accorde à l'unanimité pour vendre la position perdante SHOP.TO et éliminer le cash dormant excessif (actuellement à 60% du portefeuille). Le capital total sera réinvesti dans le leader incontesté du marché canadien, DOL.TO, qui affiche la meilleure dynamique haussière récente sans aucun frais de change.",
+    "reasoning": "La position SHOP.TO a déclenché notre stop-loss strict avec une perte de -4.88% et doit être vendue (SELL). En combinant la vente de SHOP.TO et l'utilisation de nos liquidités disponibles (600 CAD), nous disposons d'un portefeuille total d'environ 980 CAD. Conformément aux règles interdisant le cash dormant et visant une rotation agressive vers le titre le plus fort, nous investissons la quasi-totalité du capital (980 CAD soit 100% pour éliminer tout coût d'opportunité) dans DOL.TO, qui affiche la plus forte variation sur 5 jours (+6.88%) sur le marché canadien à 0% de frais."
   }
 ]
