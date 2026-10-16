@@ -255,7 +255,7 @@ nb_points = st.radio("Points affichés :", options=[10, 20, 50, 100, "Tous"], ho
 df_courbes = pd.DataFrame(courbes_list)
 df_courbes["Date_dt"] = pd.to_datetime(df_courbes["Date"])
 
-# --- NOEUD DE DÉPART 1000$ (FIXATION DU POINT ZÉRO) ---
+# --- CONSTRUCTION DU POINT DE DÉPART 1000$ INDESTRUCTIBLE ---
 all_trade_dates = []
 for bot_id, df_t in raw_trades.items():
     if df_t is not None and not df_t.empty:
@@ -264,25 +264,31 @@ for bot_id, df_t in raw_trades.items():
 
 if all_trade_dates:
     premier_achat_dt = min(all_trade_dates)
-    # Suppression de l'historique obsolète avant le premier trade réel
-    df_courbes = df_courbes[df_courbes["Date_dt"] > premier_achat_dt]
-    
-    # Injection du nœud de départ universel à 1000$ pour tous les bots à cet instant précis
-    lignes_init = []
-    for bot_id, info in BOTS.items():
-        if bot_id in raw_portfolios:
-            lignes_init.append({
-                "Date": premier_achat_dt.strftime("%Y-%m-%d %H:%M:%S"),
-                "Bot": f"{info['icon']} {info['name']}",
-                "Valeur (CAD)": CAPITAL_INITIAL,
-                "Type": "Run",
-                "Date_dt": premier_achat_dt
-            })
-    df_courbes = pd.concat([pd.DataFrame(lignes_init), df_courbes], ignore_index=True)
-    df_courbes.sort_values(by=["Bot", "Date_dt"], inplace=True)
+else:
+    premier_achat_dt = df_courbes["Date_dt"].min() if not df_courbes.empty else pd.to_datetime(now_str_qc)
 
+# 1. On détruit les valeurs obsolètes avant la première transaction
+df_courbes = df_courbes[df_courbes["Date_dt"] > premier_achat_dt]
+
+# 2. On applique le filtre de l'utilisateur (10, 20, 50) UNIQUEMENT sur les vraies variations
 if nb_points != "Tous":
     df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
+
+# 3. ON INJECTE LE 1000$ (Placé après le filtre pour qu'il ne soit jamais effacé)
+lignes_init = []
+for bot_id, info in BOTS.items():
+    if bot_id in raw_portfolios:
+        lignes_init.append({
+            "Date": premier_achat_dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "Bot": f"{info['icon']} {info['name']}",
+            "Valeur (CAD)": CAPITAL_INITIAL,
+            "Type": "Run",
+            "Date_dt": premier_achat_dt
+        })
+df_init = pd.DataFrame(lignes_init)
+df_courbes = pd.concat([df_init, df_courbes], ignore_index=True)
+df_courbes.sort_values(by=["Bot", "Date_dt"], inplace=True)
+df_courbes.reset_index(drop=True, inplace=True)
 
 if not df_courbes.empty:
     x_min_dt = df_courbes["Date_dt"].min()
