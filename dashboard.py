@@ -178,17 +178,17 @@ for bot_id, info in BOTS.items():
     if df_t is not None and not df_t.empty and "Date" in df_t.columns:
         for idx, row in df_t.iterrows():
             t_date = to_qc_time(str(row["Date"]))
-            # Règle : La première date vaut exactement l'argent de départ (1000$), les suivantes prennent l'historique ou le coût
-            val_point = CAPITAL_INITIAL if idx == 0 else float(item.get("total_value_cad", CAPITAL_INITIAL)) # Sécurité fallback
             
-            # On cherche si une valorisation enregistrée existe pour cette date dans l'historique du portfolio
+            # Recherche de la valorisation correspondante dans l'historique du portfolio, sinon 1000$ par défaut
             matched_val = CAPITAL_INITIAL
             for h_item in p_data.get("history_valuation", []):
                 if to_qc_time(h_item["date"]) == t_date:
                     matched_val = float(h_item["total_value_cad"])
                     break
+            
+            # Règle absolue : Le premier trade vaut exactement 1000$
             if idx == 0:
-                matched_val = CAPITAL_INITIAL # Force le 1000$ pile pour le premier trade
+                matched_val = CAPITAL_INITIAL
 
             courbes_list.append({
                 "Date": t_date,
@@ -197,9 +197,6 @@ for bot_id, info in BOTS.items():
                 "Type": "Run",
                 "Date_dt": pd.to_datetime(t_date)
             })
-    else:
-        # Fallback si aucun trade n'est encore listé
-        pass
 
     # Ajout du point Live actuel au bout
     courbes_list.append({
@@ -273,12 +270,10 @@ st.markdown("<h3 style='margin-bottom:8px;'>📊 Terminal Graphique</h3>", unsaf
 options_vue = ["Tous (Portefeuilles)"] + sorted(list(all_open_tickers))
 vue_choisie = st.selectbox("Sélectionne ce que tu veux analyser :", options_vue, label_visibility="collapsed")
 
-# Nouveaux boutons de sélection : 2, 4, 10, 20
 nb_points = st.radio("Points affichés :", options=[2, 4, 10, 20], horizontal=True, label_visibility="collapsed")
 df_courbes = pd.DataFrame(courbes_list)
 
 if not df_courbes.empty:
-    # Filtrage des N derniers points par bot selon le bouton sélectionné
     df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
     x_min_dt = df_courbes["Date_dt"].min()
     x_max_dt = df_courbes["Date_dt"].max()
