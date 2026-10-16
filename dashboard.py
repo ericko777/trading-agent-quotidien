@@ -273,8 +273,12 @@ vue_choisie = st.selectbox("Sélectionne ce que tu veux analyser :", options_vue
 nb_points = st.radio("Points affichés :", options=[2, 4, 10, 20], horizontal=True, label_visibility="collapsed")
 df_courbes = pd.DataFrame(courbes_list)
 
+df_courbes_affiche = pd.DataFrame()
 if not df_courbes.empty:
-    df_courbes = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
+    # On filtre les N derniers points pour l'affichage visuel
+    df_courbes_affiche = df_courbes.groupby("Bot").tail(int(nb_points)).reset_index(drop=True)
+    
+    # MAIS on calcule le X min et max absolu sur TOUTES les données pour ne jamais perdre le 1er trade (ex: du 15 oct)
     x_min_dt = df_courbes["Date_dt"].min()
     x_max_dt = df_courbes["Date_dt"].max()
 else:
@@ -287,11 +291,11 @@ coupe_marche = [
 ]
 
 if vue_choisie == "Tous (Portefeuilles)":
-    fig_comp = px.line(df_courbes, x="Date_dt", y="Valeur (CAD)", color="Bot", markers=True)
+    fig_comp = px.line(df_courbes_affiche, x="Date_dt", y="Valeur (CAD)", color="Bot", markers=True)
     fig_comp.add_hline(y=CAPITAL_INITIAL, line_dash="dot", line_color="rgba(255,255,255,0.35)")
     
     for trace in fig_comp.data:
-        bot_df = df_courbes[df_courbes["Bot"] == trace.name]
+        bot_df = df_courbes_affiche[df_courbes_affiche["Bot"] == trace.name]
         types = bot_df["Type"].tolist()
         symbols = ['circle' if t == "Run" else 'circle-open' for t in types]
         sizes = [6 if t == "Run" else 10 for t in types]
@@ -304,7 +308,7 @@ if vue_choisie == "Tous (Portefeuilles)":
             fixedrange=True, 
             title="", 
             showgrid=False, 
-            range=[x_min_dt, x_max_dt],  # <--- FORCAGE DE LA PLAGE X DEPUIS LE PREMIER TRADE
+            range=[x_min_dt, x_max_dt],  # Plage X forcée depuis la toute première transaction historique
             rangebreaks=coupe_marche
         ),
         yaxis=dict(fixedrange=True, title="CAD ($)", gridcolor="rgba(255,255,255,0.06)"),
