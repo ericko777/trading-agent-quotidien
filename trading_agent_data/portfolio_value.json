@@ -1,33 +1,23 @@
 {
-  "cash_cad": 0.0,
+  "cash_cad": 700.0,
   "positions": {
-    "VFV.TO": {
-      "shares": 3.616271125430942,
-      "total_cost_cad": 700.0,
-      "avg_price_cad": 193.5695570714662
-    },
-    "SHOP.TO": {
-      "shares": 1.2513556065992257,
+    "RY.TO": {
+      "shares": 1.07139,
       "total_cost_cad": 300.0,
-      "avg_price_cad": 239.74000549316403
+      "opened_at": "2026-10-16 21:43:35",
+      "avg_price_cad": 280.0101,
+      "last_known_val_cad": 300.0
     }
   },
   "history_valuation": [
     {
-      "date": "2026-10-15 21:34:50",
+      "date": "2026-10-16 21:39:19",
       "total_value_cad": 1000.0
     },
     {
-      "date": "2026-10-16 17:55:14",
-      "total_value_cad": 995.15
-    },
-    {
-      "date": "2026-10-16 18:43:13",
-      "total_value_cad": 994.7
-    },
-    {
-      "date": "2026-10-16 22:09:41",
-      "total_value_cad": 994.65
+      "date": "2026-10-16 21:43:35",
+      "total_value_cad": 1000.0
     }
-  ]
+  ],
+  "halted": false
 }

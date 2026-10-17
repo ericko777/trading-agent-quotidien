@@ -1,11 +1,46 @@
 [
   {
-    "date": "2026-10-15 21:34:50",
-    "model": "gemini-3.5-flash-lite",
-    "tickers_analyzed_count": 12,
+    "date": "2026-10-16 21:39:19",
+    "model": "erreur-api",
+    "tickers_analyzed_count": 14,
     "tickers_analyzed": [
       "VFV.TO",
       "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "HOLD",
+    "ticker": "AUCUN",
+    "amount_cad": 0.0,
+    "order_executed": false,
+    "risk_engine_note": "Décision HOLD ou symbole hors univers.",
+    "experts": {
+      "operateur": "API indisponible.",
+      "sceptique": "API indisponible.",
+      "visionnaire": "API indisponible."
+    },
+    "synthese": "Impossible de joindre les modèles Gemini lors de cette exécution.",
+    "reasoning": "Mise en attente automatique de sécurité suite à une erreur API."
+  },
+  {
+    "date": "2026-10-16 21:43:35",
+    "model": "gemini-3.8-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
       "SHOP.TO",
       "CSU.TO",
       "RY.TO",
@@ -19,104 +54,15 @@
     ],
     "action": "BUY",
     "ticker": "SHOP.TO",
-    "amount_cad": 400.0,
+    "amount_cad": 300.0,
     "order_executed": true,
+    "risk_engine_note": "Ordre BUY validé.",
     "experts": {
-      "operateur": "Nos liquidités sont à 100%, soit 1000 CAD, ce qui dépasse largement le seuil critique de 25% de cash dormant. Le coût d'opportunité est inacceptable. Parmi les titres canadiens à 0% de frais, CSU.TO affiche la meilleure variation sur 5 jours avec +12.77% (et un prix actuel de 3283.76 CAD), mais notre capital de 1000 CAD ne suffit pas pour une action entière. SHOP.TO (252.53 CAD, +7.83%) et DOL.TO (203.14 CAD, +7.7%) sont parfaitement accessibles. Je propose d'engager 40% du portefeuille (400 CAD) sur SHOP.TO pour maximiser la capitalisation sans surcoût de change.",
-      "sceptique": "Attention ! CSU.TO est hors de prix pour notre petit capital initial. Quant aux autres, SHOP.TO a une forte volatilité et ses derniers jours montrent de petites hésitations (245.48 à 252.53). Cependant, le cash dormant est notre pire ennemie selon la règle 1. Si nous achetons SHOP.TO, il faut surveiller de très près le stop-loss à -2.5% car nous n'avons pas de droit à l'erreur avec 1000 CAD.",
-      "visionnaire": "Le cheval le plus rapide et accessible est clairement Shopify (SHOP.TO) avec une explosion de +7.83% sur 5 jours et une dynamique haussière très claire (234.19 à 252.53). C'est le véhicule idéal pour enclencher la machine à intérêts composés sur le marché canadien sans fardeau de frais FX."
+      "operateur": "Portefeuille vierge avec 1000.00 CAD de liquidités disponibles (PnL latent sans objet). Une allocation de 300.00 CAD représente exactement 30.0% du capital, respectant parfaitement le plafond de risque de 35% (350.00 CAD max) et la fourchette recommandée de 25% à 35%. Titre coté en CAD (.TO) donc 0% de frais de conversion FX.",
+      "sceptique": "SHOP.TO a subi un recul brutal de -5.08% sur la dernière séance après avoir touché un pic récent à 252.53 CAD, et son RSI(14) à 74.0 est à la frontière exacte du surachat. Néanmoins, le cours de 239.71 CAD demeure largement au-dessus de la SMA20 (220.29 CAD) et ne viole aucune règle de neutralisation.",
+      "visionnaire": "SHOP.TO est le seul titre du marché à valider simultanément tous les filtres quantitatifs de tendance haussière : tendance SMA20 > SMA50 confirmée, momentum exceptionnel sur 20j (+33.16%) et positif sur 5j (+2.36%), le tout dans une borne de RSI acceptable (74.0 <= 74). Le repli récent constitue une opportunité classique d'entrée sur force dans une tendance majeure."
     },
-    "synthese": "Le comité s'accorde sur l'urgence absolue de déployer notre cash dormant de 1000 CAD. Le titre canadien SHOP.TO est retenu pour sa forte dynamique (+7.83%) et son accessibilité en frais 0%, évitant les pénalités US.",
-    "reasoning": "Application stricte de la règle anti-cash dormant : avec 100% de liquidités et un capital initial de 1000 CAD, nous investissons 40% du portefeuille (400 CAD) sur SHOP.TO. Ce titre canadien (.TO) présente une excellente variation sur 5 jours (+7.83%) sans aucuns frais de change (0% vs 3% sur les US), permettant d'enclencher la stratégie de croissance exponentielle et de rotation agressive."
-  },
-  {
-    "date": "2026-10-16 17:55:14",
-    "model": "gemini-3.5-flash-lite",
-    "tickers_analyzed_count": 12,
-    "tickers_analyzed": [
-      "VFV.TO",
-      "XEQT.TO",
-      "SHOP.TO",
-      "CSU.TO",
-      "RY.TO",
-      "TD.TO",
-      "ATD.TO",
-      "DOL.TO",
-      "AAPL",
-      "MSFT",
-      "NVDA",
-      "TSLA"
-    ],
-    "action": "BUY",
-    "ticker": "DOL.TO",
-    "amount_cad": 979.62,
-    "order_executed": false,
-    "experts": {
-      "operateur": "Le portefeuille actuel de 1000 CAD contient 600 CAD de cash (60% du total, ce qui viole la règle du cash dormant max 25%). La position SHOP.TO a un prix actuel de 239.74 CAD contre un prix d'achat moyen de 252.53 CAD, soit une perte latente de -5.06%. Selon notre règle de stop-loss strict à -2.5%, nous devons couper SHOP.TO immédiatement pour stopper l'hémorragie.",
-      "sceptique": "SHOP.TO est en train de s'enfoncer (-5.06% de perte latente) et l'historique récent montre une baisse prononcée (de 252.53 à 239.74). De plus, détenir 600 CAD de cash dormant représente un coût d'opportunité mortel dans notre quête du million. Il faut liquider SHOP.TO sans hésiter et réinjecter la totalité du capital disponible sur le meilleur actif canadien pour éviter les frais de change US de 3%.",
-      "visionnaire": "Le marché canadien regorge d'opportunités explosives aujourd'hui. DOL.TO affiche une performance sur 5 jours de +6.97% avec une trajectoire ascendante continue (191.93 -> 205.30). C'est le cheval le plus rapide de la course avec 0% de frais de transaction grâce à la loi Wealthsimple. C'est la cible idéale pour concentrer l'intégralité de notre capital et faire tourner la machine à intérêts composés."
-    },
-    "synthese": "Le comité acte la violation du seuil de cash dormant et la perte excessive sur SHOP.TO. Il est donc impératif de vendre SHOP.TO pour couper les pertes, puis d'allouer l'intégralité du capital disponible sur le titre canadien le plus performant du jour, DOL.TO.",
-    "reasoning": "Étape 1 : Vente totale de la position SHOP.TO en raison d'un stop-loss dépassé (-5.06% de perte). Étape 2 : Réinvestissement agressif de l'intégralité du capital (environ 979.62 CAD, incluant le cash initial et le produit de la vente) dans DOL.TO, qui affiche la meilleure variation sur 5 jours (+6.97%) sur un marché canadien sans frais, respectant ainsi la stratégie de rotation rapide, l'interdiction du cash dormant et le compoundage maximal."
-  },
-  {
-    "date": "2026-10-16 18:43:13",
-    "model": "gemini-3.5-flash-lite",
-    "tickers_analyzed_count": 12,
-    "tickers_analyzed": [
-      "VFV.TO",
-      "XEQT.TO",
-      "SHOP.TO",
-      "CSU.TO",
-      "RY.TO",
-      "TD.TO",
-      "ATD.TO",
-      "DOL.TO",
-      "AAPL",
-      "MSFT",
-      "NVDA",
-      "TSLA"
-    ],
-    "action": "BUY",
-    "ticker": "DOL.TO",
-    "amount_cad": 980.0,
-    "order_executed": false,
-    "experts": {
-      "operateur": "La position actuelle sur SHOP.TO subit une perte latente de -4.88% (prix actuel 240.21 CAD vs prix d'achat 252.53 CAD). Nos liquidités sont à 600 CAD, soit 60% du portefeuille total de 980.37 CAD, ce qui viole la règle stricte interdisant d'avoir plus de 25% de cash dormant. Il faut immédiatement couper la position perdante SHOP.TO et réallouer massivement le capital.",
-      "sceptique": "Le Sceptique rappelle que SHOP.TO a violé notre stop-loss strict de -2.5% et que sa variation sur 5 jours est négative (-1.48%). Maintenir cette position serait une erreur monumentale dictée par l'espoir. De plus, détenir 60% de cash est un coût d'opportunité inacceptable selon nos règles. Il faut vendre SHOP.TO sans hésiter.",
-      "visionnaire": "Le cheval le plus rapide du jour est DOL.TO avec une explosion de +6.88% sur 5 jours (et ATD.TO juste derrière à +6.86%). Ce sont des titres canadiens (.TO) donc 0% de frais de change. C'est l'actif idéal pour faire tourner notre capital agressivement et enclencher la croissance exponentielle."
-    },
-    "synthese": "Le comité s'accorde à l'unanimité pour vendre la position perdante SHOP.TO et éliminer le cash dormant excessif (actuellement à 60% du portefeuille). Le capital total sera réinvesti dans le leader incontesté du marché canadien, DOL.TO, qui affiche la meilleure dynamique haussière récente sans aucun frais de change.",
-    "reasoning": "La position SHOP.TO a déclenché notre stop-loss strict avec une perte de -4.88% et doit être vendue (SELL). En combinant la vente de SHOP.TO et l'utilisation de nos liquidités disponibles (600 CAD), nous disposons d'un portefeuille total d'environ 980 CAD. Conformément aux règles interdisant le cash dormant et visant une rotation agressive vers le titre le plus fort, nous investissons la quasi-totalité du capital (980 CAD soit 100% pour éliminer tout coût d'opportunité) dans DOL.TO, qui affiche la plus forte variation sur 5 jours (+6.88%) sur le marché canadien à 0% de frais."
-  },
-  {
-    "date": "2026-10-16 22:09:41",
-    "model": "gemini-3.5-flash-lite",
-    "tickers_analyzed_count": 12,
-    "tickers_analyzed": [
-      "VFV.TO",
-      "XEQT.TO",
-      "SHOP.TO",
-      "CSU.TO",
-      "RY.TO",
-      "TD.TO",
-      "ATD.TO",
-      "DOL.TO",
-      "AAPL",
-      "MSFT",
-      "NVDA",
-      "TSLA"
-    ],
-    "action": "SELL",
-    "ticker": "SHOP.TO",
-    "amount_cad": 379.71,
-    "order_executed": true,
-    "experts": {
-      "operateur": "Le portefeuille détient actuellement SHOP.TO avec un prix d'achat moyen de 252.53 CAD et un prix actuel de 239.71 CAD, soit une perte latente de -5.08%. Le stop-loss strict de -2.5% est dépassé, et la variation sur 5 jours est négative (-1.69%). De plus, le cash disponible est de 600 CAD sur un total de ~979 CAD (soit 61.3% de cash dormant, bien au-dessus de la limite de 25%). Il faut donc impérativement vendre SHOP.TO pour couper la perte et déployer agressivement le capital sur les meilleures opportunités canadiennes à 0% de frais.",
-      "sceptique": "Avocat du diable : Maintenir SHOP.TO alors qu'elle accumule les pertes et affiche une décélération nette va totalement à l'encontre de la discipline de Richard Dennis. Le cash dormant de plus de 60% est un poison mortel pour la performance composée. Il est hors de question d'acheter des valeurs US avec leurs frais FX de 1.5% alors que le marché canadien regorge de titres en forte explosion affichant des hausses de plus de 7% sur 5 jours, sans aucun frais de transaction.",
-      "visionnaire": "Le cheval le plus rapide du marché canadien aujourd'hui est sans conteste DOL.TO (Dollarama) avec une variation de +7.62% sur 5 jours et une dynamique haussière constante, talonnée de près par ATD.TO (+7.53%) et CSU.TO (+6.06%). Concentrons l'intégralité du capital libéré et du cash disponible sur DOL.TO pour capturer cette accélération explosive."
-    },
-    "synthese": "SHOP.TO a déclenché le stop-loss avec une perte de -5.08% et doit être liquidée immédiatement. Le cash dormant dépassant largement les 25 autorisés, l'intégralité des liquidités disponibles combinée au produit de la vente sera réinvestie agressivement sur DOL.TO, la meilleure dynamique du marché canadien (0% de frais).",
-    "reasoning": "Vente totale de la position SHOP.TO car elle a violé le stop-loss strict de -2.5% (perte actuelle de -5.08%) et sa variation_5j est négative. Cette action libère du capital pour respecter la règle anti-cash dormant et pivoter vers un titre .TO en forte accélération."
+    "synthese": "Le comité valide l'entrée sur SHOP.TO qui respecte scrupuleusement l'ensemble des filtres systématiques de momentum et de tendance. L'allocation de 300.00 CAD calibre le risque à 30% du portefeuille sans aucun frais de change.",
+    "reasoning": "L'analyse systématique des 14 actifs révèle que SHOP.TO est le seul candidat admissible selon nos règles d'entrée : tendance_sma20_sup_sma50 est true, prix_actuel (239.71 CAD) supérieur à sma_20 (220.29 CAD), variation_20j_pct (+33.16% > +3.0%), variation_5j_pct (+2.36% > +1.5%) et rsi_14 conforme (74.0 sur un intervalle admissible de 52 à 74). DOL.TO est exclu pour surachat extrême (RSI 89.8), CSU.TO et ATD.TO pour SMA20 < SMA50, et TD.TO pour momentum 20j insuffisant (+0.63%). L'allocation de 300.00 CAD permet de capturer la tendance tout en préservant 700.00 CAD de réserves."
   }
 ]
