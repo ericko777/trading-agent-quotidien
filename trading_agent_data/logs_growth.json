@@ -31,5 +31,38 @@
     },
     "synthese": "Le comité valide l'entrée sur le leader canadien Dollarama (DOL.TO). Le titre coche l'intégralité des critères CANSLIM de breakout haussier sans encourir les frais de change pénalisants des valeurs américaines.",
     "reasoning": "DOL.TO respecte parfaitement les critères stricts d'entrée de la stratégie CANSLIM Growth Breakout : 1) Croissance fondamentale avec revenue_growth_yoy_pct à 17.6% (> 10%) et ROE remarquable de 93.09%. 2) Signal technique de cassure validé : cours au-dessus de la sma_20 (206.56 vs 186.52), distance au plus haut de 20 jours de -0.12% (dans la fourchette requise de -2.0% à 0.0%), variation sur 5 jours de +9.51% (> +2.0%), et volume relatif de 1.17 (>= 1.0). 3) Absence totale de frais FX (titre canadien). La position est calibrée au plafond strict autorisé de 35% du portefeuille, soit 350.00 CAD."
+  },
+  {
+    "date": "2026-10-16 22:08:42",
+    "model": "gemini-3.8-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "ATD.TO",
+    "amount_cad": 350.0,
+    "order_executed": true,
+    "risk_engine_note": "Ordre BUY validé.",
+    "experts": {
+      "operateur": "La position ouverte DOL.TO affiche un unrealized_pnl_net_pct de +0.00%, ce qui exclut tout stop-loss (-3.5%) ou prise de profit (+5.0%). Les liquidités disponibles sont de 650.00 CAD. Un achat sur ATD.TO à hauteur du plafond strict de 35% équivaut exactement à 350.00 CAD, sans frais de change (0% FX).",
+      "sceptique": "Attention au RSI de ATD.TO à 77.8 et au fait que sa SMA 20 (78.69) est encore sous la SMA 50 (82.71). Toutefois, le titre valide tous les critères quantitatifs stricts et évite les 3.0% de frottement FX des valeurs américaines comme AAPL.",
+      "visionnaire": "ATD.TO offre une configuration idéale de breakout CANSLIM : chiffre d'affaires en hausse de +25.1%, cours à seulement -0.27% du plus haut à 20 jours, au-dessus de sa SMA 20, avec une impulsion de +7.23% sur 5 jours confirmée par un volume relatif de 1.26."
+    },
+    "synthese": "DOL.TO est maintenu en portefeuille avec un PnL latent neutre de +0.00%. Le comité valide l'achat du leader canadien de croissance ATD.TO, qui réalise une cassure technique confirmée par le volume, pour un montant de 350.00 CAD.",
+    "reasoning": "La position DOL.TO ne remplit aucune condition de sortie (PnL net de 0.00%, loin du stop de -3.5% et du seuil de vente de +5.0%). Conformément aux règles CANSLIM, ATD.TO répond parfaitement aux critères d'entrée : croissance du chiffre d'affaires YoY de 25.1% (> 10%), distance au sommet 20j de -0.27% (entre -2.0% et 0.0%), cours au-dessus de la SMA 20 (83.5 > 78.69), variation 5j de +7.23% (> +2.0%) et volume relatif 20j de 1.26 (>= 1.0). Le titre canadien à 0% de frais est privilégié face aux titres US. L'allocation est fixée au maximum réglementaire de 35% du portefeuille (350.00 CAD)."
   }
 ]

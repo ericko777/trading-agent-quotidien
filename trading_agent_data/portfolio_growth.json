@@ -1,5 +1,5 @@
 {
-  "cash_cad": 650.0,
+  "cash_cad": 300.0,
   "positions": {
     "DOL.TO": {
       "shares": 1.694423,
@@ -7,11 +7,22 @@
       "opened_at": "2026-10-16 21:43:35",
       "avg_price_cad": 206.56,
       "last_known_val_cad": 350.0
+    },
+    "ATD.TO": {
+      "shares": 4.191617,
+      "total_cost_cad": 350.0,
+      "opened_at": "2026-10-16 22:08:42",
+      "avg_price_cad": 83.5,
+      "last_known_val_cad": 350.0
     }
   },
   "history_valuation": [
     {
       "date": "2026-10-16 21:43:35",
+      "total_value_cad": 1000.0
+    },
+    {
+      "date": "2026-10-16 22:08:42",
       "total_value_cad": 1000.0
     }
   ],

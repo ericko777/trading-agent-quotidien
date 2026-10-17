@@ -1,11 +1,18 @@
 {
-  "cash_cad": 700.0,
+  "cash_cad": 400.0,
   "positions": {
     "RY.TO": {
       "shares": 1.07139,
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 21:43:35",
       "avg_price_cad": 280.0101,
+      "last_known_val_cad": 300.0
+    },
+    "VFV.TO": {
+      "shares": 1.561687,
+      "total_cost_cad": 300.0,
+      "opened_at": "2026-10-16 22:08:42",
+      "avg_price_cad": 192.1,
       "last_known_val_cad": 300.0
     }
   },
@@ -16,6 +23,10 @@
     },
     {
       "date": "2026-10-16 21:43:35",
+      "total_value_cad": 1000.0
+    },
+    {
+      "date": "2026-10-16 22:08:42",
       "total_value_cad": 1000.0
     }
   ],
