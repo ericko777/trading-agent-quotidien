@@ -97,5 +97,38 @@
     },
     "synthese": "Aucun titre de l'univers d'investissement ne valide simultanément l'ensemble des critères d'entrée quantitatifs stricts (tendance SMA, momentum 5j/20j et RSI sous 74). La ligne SHOP.TO ne déclenche aucun signal de sortie et est maintenue intacte. La posture requise est le statu quo rigoureux.",
     "reasoning": "La position existante SHOP.TO présente un PnL latent net de 0.00%, supérieur au seuil de stop-loss de -3.5%, et son cours actuel (239.71 CAD) reste nettement supérieur à sa SMA20 (220.29 CAD) avec une variation 5j positive (+2.36%). Pour les nouvelles opportunités d'achat : DOL.TO valide la tendance et le momentum mais est rejeté par son RSI_14 prohibitif de 89.8 (>74) ; TD.TO présente une variation 20j insuffisante (+0.63% < +3.0%) ; CSU.TO, ATD.TO, RY.TO, ZAG.TO et CGL.TO ont une tendance SMA20 < SMA50 ; les indices ETF VFV.TO et XEQT.TO ont un cours sous leur SMA20 ; enfin, aucun titre US ne satisfait le critère de surperformance >+8.0% sur 20j pour couvrir le spread FX. Conformément aux règles quantitatives, aucune transaction n'est initiée."
+  },
+  {
+    "date": "2026-10-16 22:20:20",
+    "model": "gemini-3.8-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "HOLD",
+    "ticker": "AUCUN",
+    "amount_cad": 0.0,
+    "order_executed": false,
+    "risk_engine_note": "Décision HOLD ou symbole hors univers.",
+    "experts": {
+      "operateur": "SHOP.TO présente un unrealized_pnl_net_pct de 0.00% pour une valorisation de 300.00 CAD (30.0% du portefeuille), respectant le plafond de 35%. Aucun seuil de stop-loss (-3.5%) ni de take-profit (+6.0%) n'est atteint. Les liquidités s'élèvent à 700.00 CAD. Concernant les titres US, aucun ne franchit le seuil requis de +8.0% à 20 jours pour justifier les 1.5% de frais FX d'entrée.",
+      "sceptique": "DOL.TO affiche un RSI-14 de 89.8, un niveau d'extrême surachat formellement interdit par notre règle (RSI max 74). CSU.TO et ATD.TO présentent une SMA20 inférieure à leur SMA50, invalidant la tendance haussière de fond. VFV.TO, XEQT.TO, NVDA et TSLA évoluent tous sous leur SMA20. Il est exclu de forcer une position dans ces conditions.",
+      "visionnaire": "Bien que DOL.TO (+19.65% à 20j) et CSU.TO (+12.63% à 20j) démontrent une dynamique impressionnante, le respect strict de notre filtre d'entrée élimine DOL pour surchauffe excessive et CSU pour structure de moyennes mobiles non alignée. TD.TO manque de momentum sur 20 jours (+0.63% vs +3.0% requis). Aucune configuration ne valide simultanément nos filtres quantitatifs."
+    },
+    "synthese": "La ligne existante SHOP.TO reste parfaitement sous contrôle au prix d'achat sans signal d'invalidation. Aucun des 14 actifs ne satisfait l'ensemble des critères d'entrée stricte (tendance SMA, momentum multi-horizon et borne RSI 52-74). La discipline impose le maintien du statu quo.",
+    "reasoning": "La position SHOP.TO est conservée : cours à 239.71 CAD supérieur à sa SMA20 (220.29 CAD) et unrealized_pnl_net_pct neutre (-0.00%), loin du seuil de sortie de -3.5%. Côté opportunités d'achat : DOL.TO valide le momentum mais son RSI de 89.8 excède largement la limite de 74 ; TD.TO présente une variation 20j de +0.63% inférieure au seuil minimal de +3.0% ; CSU.TO et ATD.TO ont une tendance SMA20 < SMA50 ; et les valeurs américaines n'atteignent pas les +8.0% requis pour absorber le frottement de change de 3.0% aller-retour. Conformément à la règle 1, la décision optimale est HOLD."
   }
 ]
