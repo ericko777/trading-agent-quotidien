@@ -65,8 +65,14 @@ BOTS = {
     }
 }
 
-# Modèles Gemini valides et disponibles dans l'API Google GenAI
-MODELS_TO_TRY = ["gemini-2.5-flash", "gemini-2.5-pro"]
+# Liste prioritaire des modèles Google Gemini compatibles avec l'API SDK `google-genai`
+MODELS_TO_TRY = [
+    "gemini-3.8-flash",
+    "gemini-3.7-flash",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite"
+]
 
 
 # =====================================================================
