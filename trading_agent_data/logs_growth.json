@@ -130,5 +130,38 @@
     },
     "synthese": "Les positions actuelles DOL.TO et ATD.TO respectent les critères de maintien sans déclencher ni stop-loss ni prise de profit. Le comité applique une stratégie d'inaction disciplinée en conservant le portefeuille en l'état sans frais superflus.",
     "reasoning": "Les positions en portefeuille (DOL.TO à -0.43% et ATD.TO à +0.25%) ne violent pas les règles de sortie fixées à -3.5% pour le stop-loss ni les seuils de prise de profit (+5.0% pour le Canada). Aucun des titres scannés ne présente simultanément un breakout parfait avec un volume relatif suffisant pour justifier de déployer le cash restant de 300 CAD, particulièrement sur les valeurs US lourdement taxées en FX. Par conséquent, la décision optimale est un maintien strict (HOLD)."
+  },
+  {
+    "date": "2026-10-20 14:13:02",
+    "model": "gemini-3.7-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "HOLD",
+    "ticker": "AUCUN",
+    "amount_cad": 0.0,
+    "order_executed": false,
+    "risk_engine_note": "Décision HOLD ou symbole hors univers.",
+    "experts": {
+      "operateur": "DOL.TO affiche un unrealized_pnl_net_pct de +0.51% et ATD.TO un gain net de +2.36%. Les deux positions sont bien au-dessus du seuil de stop-loss (-3.5%) et n'ont pas encore atteint la cible de prise de profit (+5.0%). Leurs pondérations respectives de 34.8% et 35.5% saturent déjà le plafond de 35% par ligne, excluant tout renfort.",
+      "sceptique": "Aucun titre de croissance externe ne valide un breakout complet : SHOP.TO est à -4.47% de son sommet 20j, CSU.TO à -3.22%, et les mégacapitalisations US affichent des variations 5j négatives tout en imposant 3% de frais FX aller-retour. TD.TO présente un volume relatif anémique de 0.11. Forcer un achat serait une erreur.",
+      "visionnaire": "Nos positions actuelles sur ATD.TO et DOL.TO sont idéalement orientées et surfent sur une dynamique haussière saine. En l'absence de nouvelle cassure franche sur SHOP.TO ou CSU.TO, la meilleure tactique consiste à laisser mûrir les gains latents avec nos 300 CAD de réserves intactes."
+    },
+    "synthese": "Les deux positions en portefeuille (DOL.TO à +0.51% et ATD.TO à +2.36%) se développent positivement sans déclencher de signal de vente ou de prise de profit. Aucune nouvelle opportunité de croissance ne remplissant l'ensemble des critères stricts de breakout CANSLIM, le maintien des positions et des liquidités est la décision optimale.",
+    "reasoning": "Les règles de sortie interdisent de vendre une ligne gagnante en dessous de +2.5% de gain réel ; avec DOL.TO à +0.51% et ATD.TO à +2.36%, aucune prise de profit n'est justifiée, et le seuil de stop-loss de -3.5% est très loin d'être atteint. Côté entrées, les positions existantes atteignent déjà la limite prudentielle de 35% du capital. Parmi les autres cibles de croissance, SHOP.TO (distance -4.47%) et CSU.TO (distance -3.22%) sont trop éloignées de leur sommet à 20 jours (-2.0% à 0.0% requis), tandis que les valeurs américaines (NVDA, MSFT, AAPL, TSLA) sont en repli sur 5 jours et grevées de 3% de frais FX. La discipline impose le statu quo."
   }
 ]

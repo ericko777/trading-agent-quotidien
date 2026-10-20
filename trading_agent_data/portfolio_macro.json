@@ -6,14 +6,14 @@
       "total_cost_cad": 400.0,
       "opened_at": "2026-10-16 21:43:35",
       "avg_price_cad": 192.1,
-      "last_known_val_cad": 401.46
+      "last_known_val_cad": 400.94
     },
     "TD.TO": {
       "shares": 1.762011,
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 22:08:42",
       "avg_price_cad": 170.26,
-      "last_known_val_cad": 298.87
+      "last_known_val_cad": 303.49
     }
   },
   "history_valuation": [
@@ -32,6 +32,10 @@
     {
       "date": "2026-10-19 15:34:41",
       "total_value_cad": 1000.33
+    },
+    {
+      "date": "2026-10-20 14:13:02",
+      "total_value_cad": 1004.43
     }
   ],
   "halted": false
