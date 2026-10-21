@@ -6,14 +6,14 @@
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 21:43:35",
       "avg_price_cad": 280.0101,
-      "last_known_val_cad": 300.45
+      "last_known_val_cad": 304.07
     },
     "VFV.TO": {
       "shares": 1.561687,
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 22:08:42",
       "avg_price_cad": 192.1,
-      "last_known_val_cad": 300.7
+      "last_known_val_cad": 302.34
     }
   },
   "history_valuation": [
@@ -40,6 +40,10 @@
     {
       "date": "2026-10-20 14:13:02",
       "total_value_cad": 1001.15
+    },
+    {
+      "date": "2026-10-21 14:19:11",
+      "total_value_cad": 1006.41
     }
   ],
   "halted": false

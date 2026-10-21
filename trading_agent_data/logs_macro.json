@@ -163,5 +163,38 @@
     },
     "synthese": "Le comité s'accorde pour maintenir les positions existantes sans effectuer de rotation. Les seuils d'invalidation ou de prise de profit ne sont pas atteints et les surachats sur les valeurs de croissance défensives incitent à la patience. L'allocation actuelle demeure optimale pour le contexte macroéconomique neutre du jour.",
     "reasoning": "Analyse mathématique et macroéconomique: Le régime macroéconomique affiche un VIX de 17.32 (normal) mais une tendance neutre et une largeur de marché contenue à 42.9%. Les positions ouvertes VFV.TO (PnL +0.23%) et TD.TO (PnL +1.16%) respectent strictement les plafonds de détention (39.9% <= 50% pour FNB et 30.2% <= 35% pour action individuelle). Ni le seuil de vente à +4.5% ni le stop-loss à -4.0% ne sont déclenchés. Conformément à la règle de rotation tactique mesurée, le portefeuille conserve ses lignes actuelles et garde 300.00 CAD en liquidités."
+  },
+  {
+    "date": "2026-10-21 14:19:11",
+    "model": "gemini-3.6-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "SHOP.TO",
+    "amount_cad": 249.44,
+    "order_executed": true,
+    "risk_engine_note": "Montant BUY plafonné par le Risk Manager de 280.00$ à 249.44$ CAD (limite de concentration/réserve).",
+    "experts": {
+      "operateur": "Les positions actuelles VFV.TO (39.9%) et TD.TO (30.5%) respectent scrupuleusement les plafonds respectifs de 50% et 35%. Leurs PnL latents (+0.78% et +2.70%) n'atteignent ni le seuil de prise de profit (+4.5%) ni le stop-loss (-4.0%). Avec 300.00 $ CAD de cash disponible, nous pouvons engager une 3e position sous le plafond de 353.92 $ CAD.",
+      "sceptique": "Le VIX à 16.63 et la largeur de marché à 57.1% confirment un régime Risk-On. Néanmoins, les taux US 10 ans restent élevés à 5.11% et le RSI de SHOP.TO est à 73.6, indiquant un surachat à court terme. Il convient d'investir avec modération sans épuiser totalement les liquidités.",
+      "visionnaire": "En régime Risk-On confirmé, la stratégie All-Weather exige de maximiser l'exposition aux leaders de croissance canadiens. SHOP.TO affiche une excellente dynamique (+19.38% sur 20j, revenus YoY +33.7%). L'ajouter à hauteur de 280 CAD perfectionne la diversification sur 3 lignes complémentaires."
+    },
+    "synthese": "Le marché étant en régime Risk-On (VIX 16.63 < 20, tendance haussière), le comité valide le déploiement partiel du cash disponible. Un achat de SHOP.TO à hauteur de 280 CAD permet d'accroître le profil offensif tout en respectant les règles de gestion du risque.",
+    "reasoning": "Diagnostic Macro : Regime Risk-On actif (VIX = 16.63, Tendance Haussiere, Breadth = 57.1%). Positions actuelles : VFV.TO (+0.78%, 403.12 CAD) et TD.TO (+2.70%, 308.09 CAD), aucune coupe ou prise de profit requise (< 4.5% gain). Liquidites disponibles : 300.00 CAD. Allocation Cible : Achat de SHOP.TO pour 280.00 CAD, représentant 27.7% du portefeuille total (1011.21 CAD), bien en deçà du plafond strict de 35% (353.92 CAD). Frais FX : 0% (titre canadien .TO)."
   }
 ]

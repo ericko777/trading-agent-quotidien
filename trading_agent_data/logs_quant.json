@@ -163,5 +163,38 @@
     },
     "synthese": "La position unique sur XEQT.TO progresse calmement sans atteindre les seuils de sortie ni offrir d'opportunité d'achat additionnelle. Le comité opte pour l'inaction disciplinée.",
     "reasoning": "La position XEQT.TO enregistre un unrealized_pnl_net_pct de +0.13%, ce qui ne satisfait pas la condition de take-profit fixée à +0.2 pour le z-score ou +2.0% pour le PnL net. Aucun stop-loss n'est requis puisque le PnL n'est pas inférieur à -2.5%. Parmi les autres actifs .TO, VFV.TO affiche un z_score de -1.04 mais les règles imposent soit z <= -1.25, rsi <= 38, soit une variation 5j <= -2.0% combinée, ce qui n'est pas pleinement rempli pour déclencher un nouvel achat agressif sans violer la prudence. Par conséquent, HOLD est la décision optimale."
+  },
+  {
+    "date": "2026-10-21 14:19:11",
+    "model": "gemini-3.5-flash-lite",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "HOLD",
+    "ticker": "AUCUN",
+    "amount_cad": 0.0,
+    "order_executed": false,
+    "risk_engine_note": "Décision HOLD ou symbole hors univers.",
+    "experts": {
+      "operateur": "La position XEQT.TO affiche un z_score_20j de -0.15, un rsi_14 de 52.2, et un unrealized_pnl_net_pct de +0.59%. Aucun seuil de vente (Take-Profit à +2.0% ou Stop-Loss à -2.5%) n'est atteint. Parmi les titres non détenus, aucun actif .TO ne présente un z_score_20j <= -1.0 ou un rsi_14 <= 42.",
+      "sceptique": "Aucune anomalie statistique valide sur les titres canadiens .TO aujourd'hui. Les actions US sont exclues à cause des frais de change de 3.0% aller-retour. XEQT.TO est proche de sa moyenne mobile et ne nécessite ni vente ni renforcement prématuré.",
+      "visionnaire": "Le marché est globalement haussier (Risk-On) mais le retour à la moyenne ne décèle aucune opportunité spectaculairement comprimée sur les symboles .TO. Maintenir la position actuelle est la décision la plus rigoureuse selon nos modèles quantitatifs."
+    },
+    "synthese": "Aucun signal d'achat ou de vente valide n'est déclenché sur les titres .TO aujourd'hui. La position ouverte sur XEQT.TO conserve un PnL latent positif mais n'atteint pas l'objectif de +2.0%. Nous appliquons une inaction disciplinée.",
+    "reasoning": "La stratégie Statistical Mean Reverter impose des seuils stricts : z_score_20j <= -1.25 ou rsi_14 <= 38 pour un achat sur un titre .TO, et unrealized_pnl_net_pct >= +2.0% ou <= -2.5% pour une vente. XEQT.TO est actuellement à +0.59% de PnL latent et ne remplit pas les conditions de sortie. Aucun autre titre .TO ne montre de survente statistique majeure (les z-scores sont supérieurs à -1.0). Par conséquent, le maintien de la position existante sans nouvel ordre est requis."
   }
 ]

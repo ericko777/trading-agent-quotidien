@@ -196,5 +196,38 @@
     },
     "synthese": "Aucun actif du panier ne valide simultanément les critères quantitatifs d'entrée, notamment en raison de surachats excessifs ou de moyennes mobiles mal alignées. La position existante sur SHOP.TO est saine et rentable (+2.00%), sans déclencheur de vente. La stricte discipline du Trend Following impose de rester en attente.",
     "reasoning": "Pour SHOP.TO, le cours de 244.51 CAD est supérieur à la SMA 20 (225.95 CAD) et le PnL latent net de +2.00% est éloigné du seuil de stop-loss (-3.5%) ainsi que du seuil de prise de profit (+6.0%). Concernant les candidats à l'achat : DOL.TO valide le momentum mais son RSI de 87.6 excède la limite maximale autorisée de 74 ; CSU.TO et ATD.TO présentent une SMA 20 inférieure à leur SMA 50 ; TD.TO présente une variation à 20 jours négative (-0.38% vs minimum requis de +3.0%) ; et les valeurs américaines échouent toutes face aux exigences de surperformance de +8.0% et de volume relatif > 1.1 pour amortir les frais FX. Aucun achat n'est justifié, nous conservons notre position sans mouvement."
+  },
+  {
+    "date": "2026-10-21 14:19:11",
+    "model": "gemini-3.5-flash-lite",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "HOLD",
+    "ticker": "AUCUN",
+    "amount_cad": 0.0,
+    "order_executed": false,
+    "risk_engine_note": "Décision HOLD ou symbole hors univers.",
+    "experts": {
+      "operateur": "La position actuelle SHOP.TO présente un PnL latent net de +3.43% (+10.29 CAD), ce qui est inférieur au seuil de prise de profit de +6.0%. Le poids de la ligne est de 30.7%, ce qui respecte parfaitement la limite de 35%. Aucun frais FX applicable puisque SHOP.TO est en CAD.",
+      "sceptique": "Attention au RSI de SHOP.TO qui est à 73.6, approchant la zone de surachat, mais la position reste saine au-dessus de la SMA20. Aucun des nouveaux candidats ne valide l'ensemble des critères d'entrée : la plupart ont un RSI trop élevé ou des variations sur 20 jours négatives ou insuffisantes, et les titres US ne remplissent pas la condition de variation supérieure à +8% avec volume relatif élevé.",
+      "visionnaire": "SHOP.TO maintient une excellente dynamique avec une variation sur 20 jours de +19.38% et une tendance de fond solidement haussière. Les conditions pour un déclenchement de vente ou un nouvel achat ne sont pas réunies, la meilleure stratégie reste de laisser courir le trend."
+    },
+    "synthese": "La position SHOP.TO se porte bien avec un gain latent de +3.43% et respecte les limites de pondération. Aucun nouveau titre ne remplit l'intégralité des critères stricts de la stratégie de suivi de tendance, nous optons donc pour un maintien de la position actuelle.",
+    "reasoning": "Le portefeuille détient actuellement SHOP.TO avec un PnL net de +3.43%, ce qui n'atteint pas l'objectif de prise de profit (+6.0%) et ne déclenche pas non plus de stop-loss (-3.5%). Le prix reste supérieur à la SMA20. Concernant les opportunités d'achat, aucun actif du marché ne valide simultanément toutes les conditions strictes (tendance SMA20>SMA50, variation 20j>3%, variation 5j>1.5%, RSI entre 52 et 74). Par conséquent, la règle d'inaction disciplinée s'applique et nous choisissons HOLD."
   }
 ]

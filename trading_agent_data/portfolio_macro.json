@@ -1,19 +1,26 @@
 {
-  "cash_cad": 300.0,
+  "cash_cad": 50.56,
   "positions": {
     "VFV.TO": {
       "shares": 2.082249,
       "total_cost_cad": 400.0,
       "opened_at": "2026-10-16 21:43:35",
       "avg_price_cad": 192.1,
-      "last_known_val_cad": 400.94
+      "last_known_val_cad": 403.12
     },
     "TD.TO": {
       "shares": 1.762011,
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 22:08:42",
       "avg_price_cad": 170.26,
-      "last_known_val_cad": 303.49
+      "last_known_val_cad": 308.09
+    },
+    "SHOP.TO": {
+      "shares": 1.00609,
+      "total_cost_cad": 249.44,
+      "opened_at": "2026-10-21 14:19:11",
+      "avg_price_cad": 247.9301,
+      "last_known_val_cad": 249.44
     }
   },
   "history_valuation": [
@@ -36,6 +43,10 @@
     {
       "date": "2026-10-20 14:13:02",
       "total_value_cad": 1004.43
+    },
+    {
+      "date": "2026-10-21 14:19:11",
+      "total_value_cad": 1011.21
     }
   ],
   "halted": false
