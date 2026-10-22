@@ -196,5 +196,38 @@
     },
     "synthese": "Le marché étant en régime Risk-On (VIX 16.63 < 20, tendance haussière), le comité valide le déploiement partiel du cash disponible. Un achat de SHOP.TO à hauteur de 280 CAD permet d'accroître le profil offensif tout en respectant les règles de gestion du risque.",
     "reasoning": "Diagnostic Macro : Regime Risk-On actif (VIX = 16.63, Tendance Haussiere, Breadth = 57.1%). Positions actuelles : VFV.TO (+0.78%, 403.12 CAD) et TD.TO (+2.70%, 308.09 CAD), aucune coupe ou prise de profit requise (< 4.5% gain). Liquidites disponibles : 300.00 CAD. Allocation Cible : Achat de SHOP.TO pour 280.00 CAD, représentant 27.7% du portefeuille total (1011.21 CAD), bien en deçà du plafond strict de 35% (353.92 CAD). Frais FX : 0% (titre canadien .TO)."
+  },
+  {
+    "date": "2026-10-22 14:13:34",
+    "model": "gemini-3.6-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "SELL",
+    "ticker": "SHOP.TO",
+    "amount_cad": 235.45,
+    "order_executed": true,
+    "risk_engine_note": "Ordre SELL validé (PnL latent net vérifié : -5.61%).",
+    "experts": {
+      "operateur": "SHOP.TO affiche un PnL latent net de -5.61%, ce qui déclenche obligatoirement la règle de stop-loss fixée à -4.0%. La vente de la position de 1.0061 action au prix courant de 234.02 CAD génère 235.45 CAD de liquidités sans frais FX.",
+      "sceptique": "Bien que le VIX soit à 19.24 (Risk-On), le titre SHOP.TO montre un net essoufflement à court terme (-7.33% sur 5 jours). Respecter le stop-loss est impératif pour éviter une dégradation supplémentaire du capital.",
+      "visionnaire": "La liquidation de SHOP.TO permet d'assainir le portefeuille. Avec la hausse des liquidités à plus de 285 CAD, nous pourrons nous repositionner tactiquement sur des moteurs plus stables ou surpondérer l'allocation selon la macro."
+    },
+    "synthese": "SHOP.TO franchit le seuil de stop-loss disciplinaire avec un PnL latent net de -5.61%. La stratégie impose la vente totale de la position (235.45 CAD) pour protéger le capital et réaccumuler des liquidités.",
+    "reasoning": "Selon les règles de gestion du risque de la stratégie (Règle #3), toute position enregistrant une perte latente net <= -4.0% doit être liquidée. SHOP.TO présente actuellement un unrealized_pnl_net_pct de -5.61% (-13.99 CAD). Bien que le régime macro reste Risk-On (VIX à 19.24 < 20 et tendance générale haussière), la rigueur d'exécution prime sur l'anticipation. Nous procédons donc à la vente intégrale de SHOP.TO pour un montant de 235.45 CAD."
   }
 ]

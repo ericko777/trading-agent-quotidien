@@ -6,7 +6,7 @@
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 21:43:35",
       "avg_price_cad": 239.71,
-      "last_known_val_cad": 310.29
+      "last_known_val_cad": 292.88
     }
   },
   "history_valuation": [
@@ -37,6 +37,10 @@
     {
       "date": "2026-10-21 14:19:11",
       "total_value_cad": 1010.29
+    },
+    {
+      "date": "2026-10-22 14:13:34",
+      "total_value_cad": 992.88
     }
   ],
   "halted": false

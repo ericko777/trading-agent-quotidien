@@ -196,5 +196,38 @@
     },
     "synthese": "Les positions actuelles (DOL.TO et ATD.TO) restent saines et loin des seuils de coupe ou de vente. Aucun signal de cassure sur les valeurs de croissance ne surcompense les frais et les critères rigoureux du style CANSLIM aujourd'hui. Nous maintenons donc notre position.",
     "reasoning": "L'analyse des positions ouvertes montre que DOL.TO est à -0.90% et ATD.TO à -0.02%, ce qui est bien au-dessus du seuil de stop-loss de -3.5% et en deçà de la prise de profit. Côté achats, aucun titre de croissance ne valide l'ensemble strict des conditions de breakout (volume relatif, distance idéale au sommet sans frictions FX injustifiées). Par conséquent, le moteur de décision impose un statu quo strict pour préserver le capital."
+  },
+  {
+    "date": "2026-10-22 14:13:34",
+    "model": "gemini-3.6-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "HOLD",
+    "ticker": "AUCUN",
+    "amount_cad": 0.0,
+    "order_executed": false,
+    "risk_engine_note": "Décision HOLD ou symbole hors univers.",
+    "experts": {
+      "operateur": "Les positions actuelles DOL.TO (+1.22% PnL net) et ATD.TO (+1.52% PnL net) sont en territoire positif mais restent sous le seuil de prise de bénéfices (+5.0%) et bien au-dessus du stop-loss (-3.5%). Le solde de cash disponible s'élève à 300.00 $ CAD.",
+      "sceptique": "CSU.TO affiche une tentative de breakout mais avec un volume relatif très faible de 0.71, ce qui indique un manque de soutien institutionnel. AAPL manque de momentum sur 5 jours (+1.32%) et engendrerait 3% de frais FX aller-retour. Il faut éviter d'acheter sur un signal incomplet.",
+      "visionnaire": "CSU.TO présente des fondamentaux exceptionnels (croissance des bénéfices de 389.3%) et se situe à -0.70% de son plus haut sur 20 jours. Cependant, la confirmation par le volume manque à l'appel, recommandant de patienter."
+    },
+    "synthese": "Le comité s'accorde pour maintenir les positions existantes sur DOL.TO et ATD.TO qui poursuivent leur progression sans atteindre les critères de sortie. Aucun nouveau titre de croissance ne valide l'ensemble des filtres de breakout avec du volume. La décision optimale est HOLD.",
+    "reasoning": "1. Évaluation des positions ouvertes : DOL.TO enregistre un unrealized_pnl_net_pct de +1.22% et ATD.TO de +1.52%. Les deux sont au-dessus du stop-loss (-3.5%) et en dessous de l'objectif de prise de profit (+5.0%). La règle interdit de couper prématurément un gain inférieur à +2.5%. 2. Analyse des signaux d'achat : CSU.TO remplit les critères de croissance et de prix (distance -0.70%, var 5j +2.96%), mais son volume relatif sur 20j (0.71) ne valide pas l'accumulation institutionnelle exigée par CANSLIM. Les titres américains (AAPL, NVDA, TSLA) ne présentent pas de breakout suffisant pour surmonter les 3% de frais FX. 3. Décision : Inaction disciplinée (HOLD)."
   }
 ]
