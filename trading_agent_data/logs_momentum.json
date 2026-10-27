@@ -262,5 +262,38 @@
     },
     "synthese": "La position ouverte sur SHOP.TO conserve ses critères de maintien malgré une correction à court terme, car le stop-loss de -3.5% n'est pas atteint et le cours demeure au-dessus de la SMA20. Aucune nouvelle opportunité ne remplit l'intégralité des conditions strictes du système de suivi de tendance.",
     "reasoning": "Pour SHOP.TO, le gain/perte latent net est de -2.37%, ce qui ne déclenche pas le stop-loss fixé à -3.5%. De plus, le prix de 234.02$ reste supérieur à la SMA20 (229.47$). Pour les autres titres du marché, aucun ne valide simultanément un RSI compris entre 52 et 74, une variation sur 20 jours > +3.0%, et une variation sur 5 jours > +1.5% sans présenter de surachat critique. Par conséquent, la stratégie impose le maintien de la position actuelle et l'inaction sur de nouveaux achats."
+  },
+  {
+    "date": "2026-10-27 15:06:00",
+    "model": "gemini-3.6-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "SELL",
+    "ticker": "SHOP.TO",
+    "amount_cad": 291.69,
+    "order_executed": true,
+    "risk_engine_note": "Ordre SELL validé (PnL latent net vérifié : -2.77%).",
+    "experts": {
+      "operateur": "SHOP.TO affiche un PnL latent net de -2.77% (-8.31 CAD). Le prix actuel de 233.07 CAD est repassé sous la SMA20 (234.31 CAD) avec une variation sur 5 jours de -4.48%, ce qui déclenche la règle de sortie sur stop-loss de tendance. Valeur nette de la position à liquider : 291.69 CAD.",
+      "sceptique": "SHOP.TO faiblit nettement avec une baisse de -4.48% sur 5 jours et la casse de sa SMA20. Il faut impérativement appliquer le stop-loss discipliné pour éviter une dégradation supplémentaire du PnL vers -3.5%.",
+      "visionnaire": "Le momentum à court terme sur SHOP.TO s'est détérioré. Libérer ce capital permettra de se repositionner ultérieurement sur les leaders de tendance les plus vigoureux comme CSU.TO ou TD.TO."
+    },
+    "synthese": "SHOP.TO a franchi à la baisse sa SMA20 (233.07 CAD vs 234.31 CAD) combiné à une performance négative sur 5 jours (-4.48%). Conformément aux règles de gestion des sorties, la position est vendue pour protéger le capital.",
+    "reasoning": "Selon les règles de sortie systématiques, une position doit être vendue si le prix repasse sous sa SMA20 avec une variation_5j_pct négative. SHOP.TO cotant à 233.07 CAD (sous la SMA20 à 234.31 CAD) avec un repli de -4.48% sur 5 jours, la condition de stop-loss de tendance est activée. Nous clôturons la position pour préserver la liquidité du portefeuille."
   }
 ]
