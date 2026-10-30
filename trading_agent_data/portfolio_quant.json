@@ -1,19 +1,12 @@
 {
-  "cash_cad": 400.24,
+  "cash_cad": 691.538,
   "positions": {
     "XEQT.TO": {
       "shares": 6.599208,
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 21:43:35",
       "avg_price_cad": 45.46,
-      "last_known_val_cad": 298.94
-    },
-    "VFV.TO": {
-      "shares": 1.56125,
-      "total_cost_cad": 299.76,
-      "opened_at": "2026-10-28 15:12:27",
-      "avg_price_cad": 192.0,
-      "last_known_val_cad": 298.35
+      "last_known_val_cad": 292.54
     }
   },
   "history_valuation": [
@@ -56,6 +49,10 @@
     {
       "date": "2026-10-29 15:21:34",
       "total_value_cad": 997.54
+    },
+    {
+      "date": "2026-10-30 14:56:06",
+      "total_value_cad": 984.08
     }
   ],
   "halted": false
