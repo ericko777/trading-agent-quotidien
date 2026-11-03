@@ -361,5 +361,38 @@
     },
     "synthese": "Déclenchement impératif du stop-loss statistique sur VFV.TO dont la perte latente atteint -2.82%, dépassant la limite fixée à -2.50%. La position intégrale est liquidée sans déviation afin de préserver le capital.",
     "reasoning": "Selon les règles d'arbitrage statistique strictes, toute position dont le `unrealized_pnl_net_pct` atteint ou passe sous -2.5% doit être vendue immédiatement sans hésitation ('STOP-LOSS STATISTIQUE'). VFV.TO affiche un `unrealized_pnl_net_pct_num` de -2.82%, ce qui invalide le scénario de retour rapide vers la moyenne à 20 jours. Vente complète de la ligne de 1.5613 actions pour un montant de 291.30 CAD."
+  },
+  {
+    "date": "2026-11-03 15:21:35",
+    "model": "gemini-3.6-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "SHOP.TO",
+    "amount_cad": 295.92,
+    "order_executed": true,
+    "risk_engine_note": "Montant BUY plafonné par le Risk Manager de 295.92$ à 295.92$ CAD (limite de concentration/réserve).",
+    "experts": {
+      "operateur": "XEQT.TO affiche un PnL latent net de -1.72%, non éligible au TP (+2.0%) ni au SL (-2.5%), tenue de position maintenue. Pour les opportunités d'achat .TO, SHOP.TO présente un Z-Score 20j de -2.89 et un RSI(14) de 20.3 avec une baisse sur 5j de -13.21%. VFV.TO a un Z-Score de -1.44 et RSI de 30.8. Le capital disponible est de 691.54 $ CAD, la taille maximale par position est de 295.92 $ CAD.",
+      "sceptique": "SHOP.TO a chuté de 7.12% aujourd'hui avec une forte volatilité (ATR 5.47%). Toutefois, avec un Z-Score de -2.89 et un RSI sous 21, la déviation dépasse largement le simple bruit statistique. Le risque de baisse supplémentaire existe mais le ratio risque/récompense de retour vers la SMA20 (235.92 CAD) est très favorable.",
+      "visionnaire": "SHOP.TO est l'anomalie statistique extrême du jour sur le TSX. Sa compression sous sa SMA20 est massive (-14.3% de distance), avec un RSI à 20.3 en zone de survente critique. C'est la configuration parfaite de réversion à la moyenne court terme recherchée par la stratégie."
+    },
+    "synthese": "Le comité maintient la position XEQT.TO (-1.72%) qui n'a touché aucun seuil d'invalidation. Il valide l'achat de SHOP.TO à hauteur de 295.92 $ CAD, le titre présentant l'écart statistique le plus extrême de la cote canadienne (Z-score -2.89, RSI 20.3).",
+    "reasoning": "Validation des critères de réversion à la moyenne : 1) La position ouverte XEQT.TO enregistre un PnL net de -1.72%, supérieur au Stop-Loss de -2.5% et inférieur au Take-Profit de +2.0%, donc conservée. 2) Interdiction absolue des titres US respectée. 3) Parmi les titres .TO, SHOP.TO affiche un Z-Score de -2.89 (largement sous le seuil maximal de -1.25) et un RSI 14 de 20.3 (sous le seuil de 38.0). La cible théorique de retour vers la SMA20 est 235.92 CAD (prix actuel 202.15 CAD). L'allocation est fixée à la limite stricte du moteur de risque : 295.92 $ CAD (30% du portefeuille)."
   }
 ]

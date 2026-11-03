@@ -1,19 +1,26 @@
 {
-  "cash_cad": 375.2062,
+  "cash_cad": 97.4462,
   "positions": {
     "RY.TO": {
       "shares": 1.07139,
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 21:43:35",
       "avg_price_cad": 280.0101,
-      "last_known_val_cad": 301.97
+      "last_known_val_cad": 305.46
     },
     "VFV.TO": {
       "shares": 1.561687,
       "total_cost_cad": 300.0,
       "opened_at": "2026-10-16 22:08:42",
       "avg_price_cad": 192.1,
-      "last_known_val_cad": 291.38
+      "last_known_val_cad": 293.75
+    },
+    "XEQT.TO": {
+      "shares": 6.216652,
+      "total_cost_cad": 277.76,
+      "opened_at": "2026-11-03 15:21:35",
+      "avg_price_cad": 44.68,
+      "last_known_val_cad": 277.76
     }
   },
   "history_valuation": [
@@ -64,6 +71,10 @@
     {
       "date": "2026-10-30 14:56:06",
       "total_value_cad": 968.56
+    },
+    {
+      "date": "2026-11-03 15:21:35",
+      "total_value_cad": 974.42
     }
   ],
   "halted": false
