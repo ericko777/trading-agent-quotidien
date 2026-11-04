@@ -427,5 +427,38 @@
     },
     "synthese": "DOL.TO est le seul titre qui valide l'ensemble des critères stricts de la stratégie Momentum Multi-Horizon tout en restant accessible financièrement. Nous ouvrons une position de 300.00 CAD.",
     "reasoning": "Analyse stricte des critères d'entrée : 1) Tendance haussière confirmée sur DOL.TO (SMA20 201.68 > SMA50 187.03 et prix 210.15 > SMA20). 2) Performance sur 20j de +14.83% (> +3.0%) et sur 5j de +2.97% (> +1.5%). 3) RSI à 67.6 situé entre 52 et 74. 4) Absence de frais FX (titre canadien). 5) Taille de position calibrée à 300.00 CAD (30.25% du portefeuille), conforme à la règle des 25%-35%."
+  },
+  {
+    "date": "2026-11-04 15:37:26",
+    "model": "gemini-3.6-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "ATD.TO",
+    "amount_cad": 300.0,
+    "order_executed": true,
+    "risk_engine_note": "Ordre BUY validé.",
+    "experts": {
+      "operateur": "DOL.TO a un PnL latent de +4.33% (non éligible à la vente car sous l'objectif de +6.0%). Pour l'achat, ATD.TO est un titre canadien (0% de frais FX) et un montant de 300.00 CAD représente 29.86% du portefeuille, ce qui respecte la tranche autorisée de 25% à 35% (max 351.63 CAD).",
+      "sceptique": "RY.TO échoue car la SMA20 est sous la SMA50, TD.TO échoue sur la variation 5j (+1.44% <= +1.5%), et les titres US manquent de momentum 20j pour valider les frais FX. ATD.TO est au-dessus de sa SMA20 (84.6 > 81.6) et son RSI de 59.1 est bien en dessous de la zone de surachat 74.",
+      "visionnaire": "ATD.TO valide l'ensemble des critères d'entrée : tendance haussière SMA20 > SMA50, performance 20j de +9.64% (> +3.0%), poussée sur 5j de +5.43% (> +1.5%) et un RSI de 59.1 idéal pour poursuivre la tendance."
+    },
+    "synthese": "La position DOL.TO (+4.33%) est maintenue sans ajustement. ATD.TO satisfait strictement l'ensemble des critères quantitatifs d'entrée en tendance haussière sans frais FX.",
+    "reasoning": "Vérification systématique : DOL.TO a un PnL latent de +4.33%, sous le seuil d'échec de -3.5% et sous la prise de profit de +6.0%. Pour les nouvelles entrées, ATD.TO remplit 100% des conditions requises : prix (84.6) > SMA20 (81.6), SMA20 (81.6) > SMA50 (80.76), variation 20j (+9.64% > +3.0%), variation 5j (+5.43% > +1.5%), RSI (59.1 dans l'intervalle 52-74) et 0% de frais FX. Une allocation de 300 CAD respecte la cible de 25% à 35% du capital total."
   }
 ]

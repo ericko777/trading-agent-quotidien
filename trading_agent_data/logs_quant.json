@@ -394,5 +394,38 @@
     },
     "synthese": "Le comité maintient la position XEQT.TO (-1.72%) qui n'a touché aucun seuil d'invalidation. Il valide l'achat de SHOP.TO à hauteur de 295.92 $ CAD, le titre présentant l'écart statistique le plus extrême de la cote canadienne (Z-score -2.89, RSI 20.3).",
     "reasoning": "Validation des critères de réversion à la moyenne : 1) La position ouverte XEQT.TO enregistre un PnL net de -1.72%, supérieur au Stop-Loss de -2.5% et inférieur au Take-Profit de +2.0%, donc conservée. 2) Interdiction absolue des titres US respectée. 3) Parmi les titres .TO, SHOP.TO affiche un Z-Score de -2.89 (largement sous le seuil maximal de -1.25) et un RSI 14 de 20.3 (sous le seuil de 38.0). La cible théorique de retour vers la SMA20 est 235.92 CAD (prix actuel 202.15 CAD). L'allocation est fixée à la limite stricte du moteur de risque : 295.92 $ CAD (30% du portefeuille)."
+  },
+  {
+    "date": "2026-11-04 15:37:26",
+    "model": "gemini-3.6-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "SELL",
+    "ticker": "SHOP.TO",
+    "amount_cad": 313.41,
+    "order_executed": true,
+    "risk_engine_note": "Ordre SELL validé (PnL latent net vérifié : +5.91%).",
+    "experts": {
+      "operateur": "Vérification des positions : XEQT.TO affiche un PnL de 0.00% (z-score 0.13), tandis que SHOP.TO affiche un PnL latent net de +5.91% (+17.49 $CAD) pour une valeur actuelle de 313.41 $CAD. Les frais FX sont de 0%.",
+      "sceptique": "Le gain de +5.91% sur SHOP.TO excède largement le seuil minimal de Take-Profit de +2.0%. Il est impératif de solder la position maintenant pour sécuriser le capital.",
+      "visionnaire": "Le retour à la moyenne sur SHOP.TO s'est matérialisé parfaitement après l'extension baissière. La stratégie a rempli son objectif sur ce titre, nous liquidons pour libérer les liquidités."
+    },
+    "synthese": "SHOP.TO a atteint un PnL latent net de +5.91%, franchissant le seuil exigé de Take-Profit de +2.0%. Nous exécutons une vente intégrale de la position pour encaisser le gain.",
+    "reasoning": "La position sur SHOP.TO affiche un gain net latent de +5.91% (+17.49 $CAD), ce qui dépasse strictement le critère d'exécution du Take-Profit fixé à +2.0%. Conformément aux règles de sortie du système de retour à la moyenne, la position doit être intégralement clôturée au prix du marché."
   }
 ]
