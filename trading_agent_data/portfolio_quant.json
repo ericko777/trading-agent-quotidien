@@ -1,14 +1,6 @@
 {
-  "cash_cad": 709.0311,
-  "positions": {
-    "XEQT.TO": {
-      "shares": 6.599208,
-      "total_cost_cad": 300.0,
-      "opened_at": "2026-10-16 21:43:35",
-      "avg_price_cad": 45.46,
-      "last_known_val_cad": 300.0
-    }
-  },
+  "cash_cad": 999.9242,
+  "positions": {},
   "history_valuation": [
     {
       "date": "2026-10-16 21:43:35",
@@ -61,6 +53,10 @@
     {
       "date": "2026-11-04 15:37:26",
       "total_value_cad": 1009.03
+    },
+    {
+      "date": "2026-11-05 15:53:51",
+      "total_value_cad": 999.92
     }
   ],
   "halted": false

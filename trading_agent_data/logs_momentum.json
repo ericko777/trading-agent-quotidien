@@ -460,5 +460,38 @@
     },
     "synthese": "La position DOL.TO (+4.33%) est maintenue sans ajustement. ATD.TO satisfait strictement l'ensemble des critères quantitatifs d'entrée en tendance haussière sans frais FX.",
     "reasoning": "Vérification systématique : DOL.TO a un PnL latent de +4.33%, sous le seuil d'échec de -3.5% et sous la prise de profit de +6.0%. Pour les nouvelles entrées, ATD.TO remplit 100% des conditions requises : prix (84.6) > SMA20 (81.6), SMA20 (81.6) > SMA50 (80.76), variation 20j (+9.64% > +3.0%), variation 5j (+5.43% > +1.5%), RSI (59.1 dans l'intervalle 52-74) et 0% de frais FX. Une allocation de 300 CAD respecte la cible de 25% à 35% du capital total."
+  },
+  {
+    "date": "2026-11-05 15:53:51",
+    "model": "gemini-3.6-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "HOLD",
+    "ticker": "AUCUN",
+    "amount_cad": 0.0,
+    "order_executed": false,
+    "risk_engine_note": "Décision HOLD ou symbole hors univers.",
+    "experts": {
+      "operateur": "DOL.TO affiche un PnL latent net de +4.42% et ATD.TO de -0.89%. Aucun seuil de sortie n'est atteint (Stop-loss à -3.5%, Prise de profit à +6.0%). DOL.TO représente déjà 31.3% du portefeuille (313.25 CAD), toute réaugmentation dépasserait la limite stricte de 35% (350.80 CAD).",
+      "sceptique": "Le marché global est en régime de risque élevé (VIX à 26.67). CSU.TO présente un RSI en surachat (76.7 > 74). TD.TO subit une baisse sur 5j (-2.73%). ATD.TO a un RSI sous 52 (51.1). Aucune nouvelle opportunité ne valide simultanément la tendance, le RSI et le momentum 5j/20j.",
+      "visionnaire": "Même si DOL.TO et CSU.TO démontrent la plus forte dynamique sur 20 jours, l'absence de configuration idéale parfaite impose la patience pour préserver le capital sous un VIX à 26.67."
+    },
+    "synthese": "Les positions actuelles DOL.TO (+4.42%) et ATD.TO (-0.89%) restent bien orientées sans déclencher de signal de sortie. Aucun nouveau candidat ne valide l'ensemble des critères stricts d'entrée sans enfreindre les règles de RSI ou de surachat.",
+    "reasoning": "Évaluation du portefeuille: DOL.TO (+4.42% PnL net) et ATD.TO (-0.89% PnL net) n'ont pas atteint les règles de vente (SL -3.5% ou TP +6.0% avec essoufflement). Évaluation des achats potentiels: CSU.TO échoue en raison d'un RSI14 de 76.7 (> 74 max). TD.TO a une variation sur 5j de -2.73% (< +1.5%). ATD.TO a un RSI14 de 51.1 (< 52). Les actions US ne respectent pas le filtre FX de +8% sur 20j. DOL.TO est déjà détenu à 31.3% de taille de ligne, un ajout dépasserait le plafond de 35%. La décision disciplinée est donc le maintien des positions (HOLD)."
   }
 ]

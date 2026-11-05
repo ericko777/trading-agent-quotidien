@@ -6,14 +6,14 @@
       "total_cost_cad": 300.0,
       "opened_at": "2026-11-03 15:21:35",
       "avg_price_cad": 210.15,
-      "last_known_val_cad": 312.98
+      "last_known_val_cad": 313.25
     },
     "ATD.TO": {
       "shares": 3.546099,
       "total_cost_cad": 300.0,
       "opened_at": "2026-11-04 15:37:26",
       "avg_price_cad": 84.6,
-      "last_known_val_cad": 300.0
+      "last_known_val_cad": 297.34
     }
   },
   "history_valuation": [
@@ -72,6 +72,10 @@
     {
       "date": "2026-11-04 15:37:26",
       "total_value_cad": 1004.67
+    },
+    {
+      "date": "2026-11-05 15:53:51",
+      "total_value_cad": 1002.28
     }
   ],
   "halted": false
