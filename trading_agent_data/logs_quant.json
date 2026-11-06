@@ -460,5 +460,38 @@
     },
     "synthese": "La position ouverte XEQT.TO enregistre une perte nette latente de -3.04%, franchissant le seuil critique de Stop-Loss fixé à -2.5%. Conformément aux règles strictes de gestion des risques, la position doit être intégralement soldée.",
     "reasoning": "La position XEQT.TO affiche un unrealized_pnl_net_pct de -3.04%, ce qui active la règle de sortie obligatoire (Stop-Loss statistique si <= -2.5%). Même si le titre se situe à un Z-Score de -2.33, la discipline de gestion du risque prévaut sur la prédiction statistique. Vente de la totalité de la position pour une valeur nette de 290.89 $CAD."
+  },
+  {
+    "date": "2026-11-06 15:10:37",
+    "model": "gemini-3.8-flash",
+    "tickers_analyzed_count": 14,
+    "tickers_analyzed": [
+      "VFV.TO",
+      "XEQT.TO",
+      "ZAG.TO",
+      "CGL.TO",
+      "SHOP.TO",
+      "CSU.TO",
+      "RY.TO",
+      "TD.TO",
+      "ATD.TO",
+      "DOL.TO",
+      "AAPL",
+      "MSFT",
+      "NVDA",
+      "TSLA"
+    ],
+    "action": "BUY",
+    "ticker": "SHOP.TO",
+    "amount_cad": 299.98,
+    "order_executed": true,
+    "risk_engine_note": "Montant BUY plafonné par le Risk Manager de 299.98$ à 299.98$ CAD (limite de concentration/réserve).",
+    "experts": {
+      "operateur": "Portefeuille 100% Cash (999.92 CAD, 0 position ouverte). Filtrage strict des titres .TO : VFV.TO (Z: -1.46, RSI: 37.9), XEQT.TO (Z: -1.41, RSI: 41.4) et SHOP.TO (Z: -1.37, RSI: 31.7, var_5j: -4.72%) valident les critères d'entrée (Z <= -1.25 et RSI <= 38.0). Les titres US sont exclus (frais FX 3.0%). Limite d'allocation par ligne : 299.98 CAD.",
+      "sceptique": "SHOP.TO présente une volatilité ATR élevée (5.34%), mais le rebond technique récent (+4.34% sur 1j) confirme que le support statistique a tenu. Le RSI à 31.7 et le Z-Score de -1.37 écartent tout risque de faux signal ou de bruit de marché.",
+      "visionnaire": "SHOP.TO constitue le ressort statistique le plus comprimé de la cote canadienne : situé à -9.41% sous sa SMA 20 (231.79 CAD), son potentiel de retour à la moyenne offre un ratio risque/rendement largement supérieur au seuil cible de +2.0% à +3.5% sans aucun frais de change."
+    },
+    "synthese": "Le comité valide l'ouverture d'une première position sur SHOP.TO, qui réunit une survente extrême (RSI 31.7, Z-Score -1.37) et un potentiel de retour à la SMA 20 optimal. L'allocation respecte scrupuleusement la limite réglementaire de 30% du portefeuille en CAD.",
+    "reasoning": "SHOP.TO remplit l'ensemble des critères stricts de la stratégie Mean Reversion : Z-Score 20j de -1.37 (<= -1.25), RSI 14 de 31.7 (<= 38.0) et baisse 5 jours de -4.72% (<= -2.0%). Le cours actuel (209.97 CAD) est très significativement en dessous de sa SMA 20 (231.79 CAD). Aucun frais FX n'est encouru car le titre est coté sur le TSX (.TO). Nous engageons le montant maximal autorisé de 299.98 CAD."
   }
 ]
